@@ -34,3 +34,7 @@ and it will automatically display everything.
 #Convinience Function
         self.tbBubbleDemo.scrollBubbleViewToBottom(true) // true will animate
         
+#Copy Right
+        do it whatever you want, but please don't remove top of the 7 comment lines :)
+        
+It is my first public library. Hope it will be helpful
