@@ -32,7 +32,7 @@ class MyBubbleViewCell: UITableViewCell {
         
     }
     
-    private func getTimeString(date:NSDate) -> String {
+    func getTimeString(date:NSDate) -> String {
     
         let dateFormatter = NSDateFormatter()
         let language = NSBundle.mainBundle().preferredLocalizations.first! as String

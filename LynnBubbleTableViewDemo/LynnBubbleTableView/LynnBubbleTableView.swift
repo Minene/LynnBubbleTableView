@@ -23,6 +23,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
     private var arrBubbleSection:Array<Array<LynnBubbleData>> = []
     public var header_scrollable = true
     public var header_show_weekday = true
+//    public var image_wrapping = true // not yet implemented
     
     init() {
         super.init(frame: CGRectZero, style: UITableViewStyle.Plain)
@@ -54,6 +55,8 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         self.registerNib(UINib(nibName: "LynnBubbleViewHeaderCell", bundle: nil), forCellReuseIdentifier: "lynnBubbleHeaderCell")
         self.registerNib(UINib(nibName: "MyBubbleViewCell", bundle: nil), forCellReuseIdentifier: "myBubbleCell")
         self.registerNib(UINib(nibName: "Someone'sBubbleViewCell", bundle: nil), forCellReuseIdentifier: "someonesBubbleCell")
+        self.registerNib(UINib(nibName: "ImageBubbleTableViewCell", bundle: nil), forCellReuseIdentifier: "myImageCell")
+        self.registerNib(UINib(nibName: "ImageBubbleSomeoneViewCell", bundle: nil), forCellReuseIdentifier: "someoneImageCell")
         
         self.separatorStyle = .None
         
@@ -134,15 +137,25 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
         
-        var cell:MyBubbleViewCell = Someone_sBubbleViewCell() // initialize for downcast
+        var cell:MyBubbleViewCell = MyBubbleViewCell()
         
         if bubbleData.type == BubbleDataType.Mine {
 
-            cell = tableView.dequeueReusableCellWithIdentifier("myBubbleCell") as! MyBubbleViewCell
+            if bubbleData.image == nil {
+                cell = tableView.dequeueReusableCellWithIdentifier("myBubbleCell") as! MyBubbleViewCell
+            }else{
+                cell = tableView.dequeueReusableCellWithIdentifier("myImageCell") as! ImageBubbleTableViewCell
+            }
+            
             
         }else {
 
-            cell =  tableView.dequeueReusableCellWithIdentifier("someonesBubbleCell") as! Someone_sBubbleViewCell
+            if bubbleData.image == nil {
+                cell = tableView.dequeueReusableCellWithIdentifier("someonesBubbleCell") as! Someone_sBubbleViewCell
+            }else{
+                cell = tableView.dequeueReusableCellWithIdentifier("someoneImageCell") as! ImageBubbleSomeoneViewCell
+            }
+            
             let imgCell = cell as! Someone_sBubbleViewCell
             
             if someoneElse_grouping && indexPath.row > 1{
@@ -156,12 +169,24 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             
         }
         
-        
         cell.setBubbleData(bubbleData)
         
         
         
         return cell
+    }
+    
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        if indexPath.row > 1 {
+         
+            let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
+            
+            if bubbleData.image != nil {
+                return ((bubbleData.image?.size.height)! * (tableView.bounds.size.width / 2)) / (bubbleData.image?.size.width)! + 10
+            }
+        }
+        return UITableViewAutomaticDimension
     }
     
     

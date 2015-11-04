@@ -21,6 +21,12 @@
 		9A0122D71BE8B06900123F62 /* MyBubbleViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122D01BE8B06900123F62 /* MyBubbleViewCell.xib */; };
 		9A0122DA1BE8B23D00123F62 /* Someone'sBubbleViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0122D81BE8B23D00123F62 /* Someone'sBubbleViewCell.swift */; };
 		9A0122DB1BE8B23D00123F62 /* Someone'sBubbleViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122D91BE8B23D00123F62 /* Someone'sBubbleViewCell.xib */; };
+		9A0122E01BE9D48200123F62 /* ImageBubbleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0122DE1BE9D48200123F62 /* ImageBubbleTableViewCell.swift */; };
+		9A0122E11BE9D48200123F62 /* ImageBubbleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122DF1BE9D48200123F62 /* ImageBubbleTableViewCell.xib */; };
+		9A0122E41BE9D82300123F62 /* ImageBubbleSomeoneViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0122E21BE9D82300123F62 /* ImageBubbleSomeoneViewCell.swift */; };
+		9A0122E51BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E31BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib */; };
+		9A0122E81BE9DF0F00123F62 /* cat_height.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E61BE9DF0F00123F62 /* cat_height.jpg */; };
+		9A0122E91BE9DF0F00123F62 /* cat_width.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E71BE9DF0F00123F62 /* cat_width.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +58,12 @@
 		9A0122D01BE8B06900123F62 /* MyBubbleViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MyBubbleViewCell.xib; sourceTree = "<group>"; };
 		9A0122D81BE8B23D00123F62 /* Someone'sBubbleViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Someone'sBubbleViewCell.swift"; sourceTree = "<group>"; };
 		9A0122D91BE8B23D00123F62 /* Someone'sBubbleViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Someone'sBubbleViewCell.xib"; sourceTree = "<group>"; };
+		9A0122DE1BE9D48200123F62 /* ImageBubbleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBubbleTableViewCell.swift; sourceTree = "<group>"; };
+		9A0122DF1BE9D48200123F62 /* ImageBubbleTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageBubbleTableViewCell.xib; sourceTree = "<group>"; };
+		9A0122E21BE9D82300123F62 /* ImageBubbleSomeoneViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBubbleSomeoneViewCell.swift; sourceTree = "<group>"; };
+		9A0122E31BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageBubbleSomeoneViewCell.xib; sourceTree = "<group>"; };
+		9A0122E61BE9DF0F00123F62 /* cat_height.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat_height.jpg; sourceTree = "<group>"; };
+		9A0122E71BE9DF0F00123F62 /* cat_width.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat_width.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +111,8 @@
 				9A0122AD1BE8AFF400123F62 /* Main.storyboard */,
 				9A0122B01BE8AFF400123F62 /* Assets.xcassets */,
 				9A0122B21BE8AFF400123F62 /* LaunchScreen.storyboard */,
+				9A0122E61BE9DF0F00123F62 /* cat_height.jpg */,
+				9A0122E71BE9DF0F00123F62 /* cat_width.jpg */,
 				9A0122B51BE8AFF400123F62 /* Info.plist */,
 			);
 			path = LynnBubbleTableViewDemo;
@@ -124,6 +138,10 @@
 				9A0122D01BE8B06900123F62 /* MyBubbleViewCell.xib */,
 				9A0122D81BE8B23D00123F62 /* Someone'sBubbleViewCell.swift */,
 				9A0122D91BE8B23D00123F62 /* Someone'sBubbleViewCell.xib */,
+				9A0122DE1BE9D48200123F62 /* ImageBubbleTableViewCell.swift */,
+				9A0122DF1BE9D48200123F62 /* ImageBubbleTableViewCell.xib */,
+				9A0122E21BE9D82300123F62 /* ImageBubbleSomeoneViewCell.swift */,
+				9A0122E31BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib */,
 			);
 			path = LynnBubbleTableView;
 			sourceTree = "<group>";
@@ -209,12 +227,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A0122E81BE9DF0F00123F62 /* cat_height.jpg in Resources */,
 				9A0122B41BE8AFF400123F62 /* LaunchScreen.storyboard in Resources */,
 				9A0122DB1BE8B23D00123F62 /* Someone'sBubbleViewCell.xib in Resources */,
 				9A0122D71BE8B06900123F62 /* MyBubbleViewCell.xib in Resources */,
 				9A0122B11BE8AFF400123F62 /* Assets.xcassets in Resources */,
 				9A0122D41BE8B06900123F62 /* LynnBubbleViewHeaderCell.xib in Resources */,
 				9A0122AF1BE8AFF400123F62 /* Main.storyboard in Resources */,
+				9A0122E11BE9D48200123F62 /* ImageBubbleTableViewCell.xib in Resources */,
+				9A0122E51BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib in Resources */,
+				9A0122E91BE9DF0F00123F62 /* cat_width.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,9 +254,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A0122E41BE9D82300123F62 /* ImageBubbleSomeoneViewCell.swift in Sources */,
 				9A0122D21BE8B06900123F62 /* LynnBubbleTableView.swift in Sources */,
 				9A0122D11BE8B06900123F62 /* LynnBubbleData.swift in Sources */,
 				9A0122D61BE8B06900123F62 /* MyBubbleViewCell.swift in Sources */,
+				9A0122E01BE9D48200123F62 /* ImageBubbleTableViewCell.swift in Sources */,
 				9A0122D31BE8B06900123F62 /* LynnBubbleViewHeaderCell.swift in Sources */,
 				9A0122DA1BE8B23D00123F62 /* Someone'sBubbleViewCell.swift in Sources */,
 				9A0122AC1BE8AFF400123F62 /* ViewController.swift in Sources */,
@@ -428,6 +452,7 @@
 				9A0122C51BE8AFF400123F62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9A0122C61BE8AFF400123F62 /* Build configuration list for PBXNativeTarget "LynnBubbleTableViewDemoUITests" */ = {
 			isa = XCConfigurationList;
@@ -436,6 +461,7 @@
 				9A0122C81BE8AFF400123F62 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

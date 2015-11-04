@@ -33,6 +33,7 @@ public class LynnBubbleData: NSObject {
         self.text = text
         self.image = image
         self.date = date
+        self.userID = userID
         self.type = type
     }
     

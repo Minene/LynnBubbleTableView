@@ -47,6 +47,16 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
             text += message
             
         }
+        
+        let image_width = UIImage(named: "cat_width.jpg")!
+        let image_height = UIImage(named: "cat_height.jpg")!
+        
+        
+        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: image_width, date: NSDate()))
+        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: image_height, date: NSDate()))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_width, date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_height, date: NSDate(), type: BubbleDataType.Someone))
+        
         self.tbBubbleDemo.reloadData()
         
         self.tbBubbleDemo.scrollBubbleViewToBottom(true)
