@@ -5,7 +5,7 @@ Simplely make an array using custom data class.
 and it will automatically display everything.
 
 #How to use
-1.Import LynnBubbleTableView folder. (8 files)
+1.Import LynnBubbleTableView folder. (12 files)
 
 2.Add a tableview in your storyboard or xib whatever, and change custom class from UITableView to LynnBubbleTableView in identity inspector
 
