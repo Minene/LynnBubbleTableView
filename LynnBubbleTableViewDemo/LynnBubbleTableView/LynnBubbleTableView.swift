@@ -10,8 +10,9 @@ import UIKit
 
 public protocol LynnBubbleViewDataSource : NSObjectProtocol {
     
-    func numberOfRowsForBubbleTable (bubbleTableView:LynnBubbleTableView) -> Int
-    func bubbleTableView (bubbleTableView:LynnBubbleTableView, dataAtIndex:Int) -> LynnBubbleData
+    func numberOfRowsForBubbleTable (bubbleTableView:LynnBubbleTableView) -> Int?
+    func bubbleTableView (bubbleTableView:LynnBubbleTableView, dataAtIndex:Int) -> LynnBubbleData?
+    func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     
 }
 
@@ -66,41 +67,44 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         if self.bubbleDataSource != nil && self.bubbleDataSource?.numberOfRowsForBubbleTable(self) > 0 {
             
-            let numberOfRows:Int = self.bubbleDataSource!.numberOfRowsForBubbleTable(self)
-            var datas:Array<LynnBubbleData> = []
-            
-            for index in 0 ..< numberOfRows {
-                let bubbleData = self.bubbleDataSource!.bubbleTableView(self, dataAtIndex: index)
-                datas.append(bubbleData)
-            }
-            
-            datas.sortInPlace({$0.date!.timeIntervalSinceNow < $1.date!.timeIntervalSinceNow})
-            
-            var arrBubbleDatasGroupByDay:Array<LynnBubbleData> = []
-            self.arrBubbleSection = []
-        
-            let tempData:LynnBubbleData = datas[0]
-            arrBubbleDatasGroupByDay.append(tempData)
-            
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let compareDate = tempData.date
-            
-            for index in 1 ..< numberOfRows {
-                let comparedData = datas[index]
-                let textOrigin = dateFormatter.stringFromDate(comparedData.date!)
-                let textCompare = dateFormatter.stringFromDate(compareDate!)
+            if let numberOfRows:Int = self.bubbleDataSource!.numberOfRowsForBubbleTable(self)! {
                 
-                if textOrigin != textCompare {
-                    self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
-                    arrBubbleDatasGroupByDay = []
-                }
-                arrBubbleDatasGroupByDay.append(comparedData)
+                var datas:Array<LynnBubbleData> = []
                 
-                if index == numberOfRows-1 {
-                    self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                for index in 0 ..< numberOfRows {
+                    let bubbleData = self.bubbleDataSource!.bubbleTableView(self, dataAtIndex: index)
+                    datas.append(bubbleData!)
+                }
+                
+                datas.sortInPlace({$0.date!.timeIntervalSinceNow < $1.date!.timeIntervalSinceNow})
+                
+                var arrBubbleDatasGroupByDay:Array<LynnBubbleData> = []
+                self.arrBubbleSection = []
+                
+                let tempData:LynnBubbleData = datas[0]
+                arrBubbleDatasGroupByDay.append(tempData)
+                
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                let compareDate = tempData.date
+                
+                for index in 1 ..< numberOfRows {
+                    let comparedData = datas[index]
+                    let textOrigin = dateFormatter.stringFromDate(comparedData.date!)
+                    let textCompare = dateFormatter.stringFromDate(compareDate!)
+                    
+                    if textOrigin != textCompare {
+                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                        arrBubbleDatasGroupByDay = []
+                    }
+                    arrBubbleDatasGroupByDay.append(comparedData)
+                    
+                    if index == numberOfRows-1 {
+                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                    }
                 }
             }
+
         }
         super.reloadData()
     }
@@ -189,21 +193,33 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         return UITableViewAutomaticDimension
     }
     
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.bubbleDataSource?.bubbleTableView(self, didSelectRowAtIndexPath: indexPath)
+    }
     
     //MARK: - Public Method
     
     func scrollBubbleViewToBottom(animated:Bool){
-        let lastSectionIdx = self.numberOfSections - 1
         
-        if lastSectionIdx >= 0 {
+        let delay = 0.1 * Double(NSEC_PER_SEC)
+        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+        
+        dispatch_after(time, dispatch_get_main_queue(), {
+            let lastSectionIdx = self.numberOfSections - 1
             
-            let yPositionForChat = self.contentSize.height
-            if yPositionForChat > self.bounds.size.height {
+            if lastSectionIdx >= 0 {
                 
-                let idx:NSIndexPath = NSIndexPath(forRow: self.numberOfRowsInSection(lastSectionIdx) - 1, inSection: lastSectionIdx)
-                self.scrollToRowAtIndexPath(idx, atScrollPosition: .Bottom, animated: animated)
+                let yPositionForChat = self.contentSize.height
+                if yPositionForChat > self.bounds.size.height {
+                    
+                    let idx:NSIndexPath = NSIndexPath(forRow: self.numberOfRowsInSection(lastSectionIdx) - 1, inSection: lastSectionIdx)
+                    self.scrollToRowAtIndexPath(idx, atScrollPosition: .Bottom, animated: animated)
+                    
+                    //                self.setContentOffset(CGPointMake(0, yPositionForChat - self.bounds.size.height), animated: animated)
+                }
             }
-        }
+        })
+        
     }
     
     /*

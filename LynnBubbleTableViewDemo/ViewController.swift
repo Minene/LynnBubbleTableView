@@ -24,6 +24,11 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
         self.tbBubbleDemo.header_show_weekday = true // default is true
         
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         self.testChatData()
     }
 
@@ -32,6 +37,8 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         // Dispose of any resources that can be recreated.
     }
 
+    
+    
     func testChatData () {
         let message = "aslkjfdlkjglkjsdjglksjdflkjlskvjkldjv lkjclvkjvlkjvlklkjlcklck"
         var text = message
@@ -58,20 +65,16 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_height, date: NSDate(), type: BubbleDataType.Someone))
         
         self.tbBubbleDemo.reloadData()
-        
+        NSLog("self.tbBubbleDemo.bounds.height:%f",self.tbBubbleDemo.contentSize.height)
         self.tbBubbleDemo.scrollBubbleViewToBottom(true)
-        
+        NSLog("self.tbBubbleDemo.bounds.height:%f",self.tbBubbleDemo.contentSize.height)
     }
-    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int {
+    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int? {
         return self.arrChatTest.count
     }
     
-    func bubbleTableView(bubbleTableView: LynnBubbleTableView, dataAtIndex: Int) -> LynnBubbleData {
-        if let data:LynnBubbleData = self.arrChatTest[dataAtIndex] {
-            return data
-        }else {
-            return LynnBubbleData()
-        }
+    func bubbleTableView(bubbleTableView: LynnBubbleTableView, dataAtIndex: Int) -> LynnBubbleData? {
+        return self.arrChatTest[dataAtIndex]
     }
 
 }
