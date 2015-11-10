@@ -84,25 +84,32 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                 let tempData:LynnBubbleData = datas[0]
                 arrBubbleDatasGroupByDay.append(tempData)
                 
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd"
-                let compareDate = tempData.date
-                
-                for index in 1 ..< numberOfRows {
-                    let comparedData = datas[index]
-                    let textOrigin = dateFormatter.stringFromDate(comparedData.date!)
-                    let textCompare = dateFormatter.stringFromDate(compareDate!)
+                if datas.count > 1 {
                     
-                    if textOrigin != textCompare {
-                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
-                        arrBubbleDatasGroupByDay = []
-                    }
-                    arrBubbleDatasGroupByDay.append(comparedData)
+                    let dateFormatter = NSDateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd"
+                    let compareDate = tempData.date
                     
-                    if index == numberOfRows-1 {
-                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                    for index in 1 ..< numberOfRows {
+                        let comparedData = datas[index]
+                        let textOrigin = dateFormatter.stringFromDate(comparedData.date!)
+                        let textCompare = dateFormatter.stringFromDate(compareDate!)
+                        
+                        if textOrigin != textCompare {
+                            self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                            arrBubbleDatasGroupByDay = []
+                        }
+                        arrBubbleDatasGroupByDay.append(comparedData)
+                        
+                        if index == numberOfRows-1 {
+                            self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                        }
                     }
+                    
+                }else{
+                    self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
                 }
+
             }
 
         }
