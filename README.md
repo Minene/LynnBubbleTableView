@@ -31,8 +31,12 @@ and it will automatically display everything.
         self.tbBubbleDemo.someoneElse_grouping = true // default is true
         self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
         self.tbBubbleDemo.header_show_weekday = true // default is true
+        self.tbBubbleDemo.refreshable = true // default is false
+
 #Convinience Function
         self.tbBubbleDemo.scrollBubbleViewToBottom(true) // true will animate
+        func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath) // optional, call when bubble cell did selected
+        func bubbleTableViewRefreshed(bubbleTableView:LynnBubbleTableView) // optinal, call when bubble view triggered refresh action. please set self.tbBubbleDemo.refreshable = true when you use.
         
 #Copy Right
         do it whatever you want, but please don't remove top of the 7 comment lines :)
