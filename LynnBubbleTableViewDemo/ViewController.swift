@@ -24,6 +24,7 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
         self.tbBubbleDemo.header_show_weekday = true // default is true
         
+        self.tbBubbleDemo.refreshable = true // default is false
         
     }
     
@@ -40,18 +41,19 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
     
     
     func testChatData () {
-        let message = "aslkjfdlkjglkjsdjglksjdflkjlskvjkldjv lkjclvkjvlkjvlklkjlcklck"
-        var text = message
+        var messageMine = "aslkjfdlkjglkjsdjglksjdflkjlskvjkldjv lkjclvkjvlkjvlklkjlcklck"
+        var messageSomeone = "asklfd"
         for index in 0..<10 {
             
             if index % 4 == 0 {
-                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "123", profile: nil, text: text, image: nil, date: NSDate())
+                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "123", profile: nil, text: messageMine, image: nil, date: NSDate())
                 self.arrChatTest.append(bubbleData)
+                messageMine += " " + messageMine
             }else {
-                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: "asklfdj", image: nil, date: NSDate(), type: BubbleDataType.Someone)
+                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: messageSomeone, image: nil, date: NSDate(), type: BubbleDataType.Someone)
                 self.arrChatTest.append(bubbleData)
+                messageSomeone += " " + messageSomeone
             }
-            text += message
             
         }
         
@@ -60,21 +62,43 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         
         
         self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: image_width, date: NSDate()))
-        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: image_height, date: NSDate()))
-        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_width, date: NSDate(), type: BubbleDataType.Someone))
         self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_height, date: NSDate(), type: BubbleDataType.Someone))
         
+        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: "http://i.imgur.com/FkInYhB.jpg", date: NSDate()))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
+        
+        
         self.tbBubbleDemo.reloadData()
-        NSLog("self.tbBubbleDemo.bounds.height:%f",self.tbBubbleDemo.contentSize.height)
+
         self.tbBubbleDemo.scrollBubbleViewToBottom(true)
-        NSLog("self.tbBubbleDemo.bounds.height:%f",self.tbBubbleDemo.contentSize.height)
+
     }
-    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int? {
+    
+    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int {
         return self.arrChatTest.count
     }
     
     func bubbleTableView(bubbleTableView: LynnBubbleTableView, dataAtIndex: Int) -> LynnBubbleData? {
         return self.arrChatTest[dataAtIndex]
+    }
+    
+    // optional
+    func bubbleTableView(bubbleTableView: LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let alert = UIAlertController(title: nil, message: "selected!", preferredStyle: .Alert)
+        let closeAction = UIAlertAction(title: "Close",
+            style: .Default) { (action: UIAlertAction!) -> Void in
+        }
+        alert.addAction(closeAction)
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    // optional
+    func bubbleTableViewRefreshed(bubbleTableView: LynnBubbleTableView) {
+        let alert = UIAlertController(title: nil, message: "refresh!", preferredStyle: .Alert)
+        let closeAction = UIAlertAction(title: "Close",
+            style: .Default) { (action: UIAlertAction!) -> Void in
+        }
+        alert.addAction(closeAction)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
 }

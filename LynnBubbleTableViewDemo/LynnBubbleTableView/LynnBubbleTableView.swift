@@ -7,24 +7,78 @@
 //
 
 import UIKit
+import ObjectiveC
 
-public protocol LynnBubbleViewDataSource : NSObjectProtocol {
+typealias dispatch_cancelable_closure = (cancel : Bool) -> Void
+func _delay(time:NSTimeInterval, closure:()->Void) ->  dispatch_cancelable_closure? {
     
-    func numberOfRowsForBubbleTable (bubbleTableView:LynnBubbleTableView) -> Int?
-    func bubbleTableView (bubbleTableView:LynnBubbleTableView, dataAtIndex:Int) -> LynnBubbleData?
-    func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func dispatch_later(clsr:()->Void) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(time * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), clsr)
+    }
     
+    var closure:dispatch_block_t? = closure
+    var cancelableClosure:dispatch_cancelable_closure?
+    
+    let delayedClosure:dispatch_cancelable_closure = { cancel in
+        if closure != nil {
+            if (cancel == false) {
+                dispatch_async(dispatch_get_main_queue(), closure!);
+            }
+        }
+        closure = nil
+        cancelableClosure = nil
+    }
+    
+    cancelableClosure = delayedClosure
+    
+    dispatch_later {
+        if let delayedClosure = cancelableClosure {
+            delayedClosure(cancel: false)
+        }
+    }
+    
+    return cancelableClosure;
+}
+
+
+@objc public protocol LynnBubbleViewDataSource : NSObjectProtocol {
+    
+    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int
+    func bubbleTableView(bubbleTableView:LynnBubbleTableView, dataAtIndex:Int) -> LynnBubbleData?
+    optional func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    optional func bubbleTableViewRefreshed(bubbleTableView:LynnBubbleTableView)
 }
 
 public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
 
-    public var bubbleDataSource:LynnBubbleViewDataSource?
+    internal var bubbleDataSource:LynnBubbleViewDataSource?
     public var someoneElse_grouping = true
 //    public var someoneElse_grouping_interval:NSTimeInterval = 60.0
     private var arrBubbleSection:Array<Array<LynnBubbleData>> = []
     public var header_scrollable = true
     public var header_show_weekday = true
 //    public var image_wrapping = true // not yet implemented
+    public var refreshable = false {
+        didSet {
+            if refreshable {
+                self.addSubview(self.refreshControl)
+            }else{
+                self.refreshControl.removeFromSuperview()
+            }
+        }
+    }
+    
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        
+        return refreshControl
+    }()
     
     init() {
         super.init(frame: CGRectZero, style: UITableViewStyle.Plain)
@@ -61,13 +115,21 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         self.separatorStyle = .None
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "_imageDidLoadNotification:", name:"_CellDidLoadImageNotification", object: nil)
+        
     }
+    
+    deinit{
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "_CellDidLoadImageNotification", object: nil)
+        
+    }
+    
         
     override public func reloadData() {
         
         if self.bubbleDataSource != nil && self.bubbleDataSource?.numberOfRowsForBubbleTable(self) > 0 {
             
-            if let numberOfRows:Int = self.bubbleDataSource!.numberOfRowsForBubbleTable(self)! {
+            if let numberOfRows:Int = self.bubbleDataSource!.numberOfRowsForBubbleTable(self) {
                 
                 var datas:Array<LynnBubbleData> = []
                 
@@ -190,18 +252,46 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         if indexPath.row > 1 {
-         
+            
             let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
             
             if bubbleData.image != nil {
-                return ((bubbleData.image?.size.height)! * (tableView.bounds.size.width / 2)) / (bubbleData.image?.size.width)! + 10
+                return bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
             }
         }
         return UITableViewAutomaticDimension
     }
     
+    func _imageDidLoadNotification(notification: NSNotification) {
+        if  let cell = notification.object as? UITableViewCell {
+            if let indexPath = self.indexPathForCell(cell){
+                self.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+            }
+        }
+    }
+    
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.bubbleDataSource?.bubbleTableView(self, didSelectRowAtIndexPath: indexPath)
+        let reponse = self.bubbleDataSource?.respondsToSelector("bubbleTableView:didSelectRowAtIndexPath:")
+        if reponse! {
+            self.bubbleDataSource?.bubbleTableView!(self, didSelectRowAtIndexPath: indexPath)
+        }
+        
+        
+    }
+    
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        // Do some reloading of data and update the table view's data source
+        // Fetch more objects from a web service, for example...
+        
+        // Simply adding an object to the data source for this example
+        
+        let reponse = self.bubbleDataSource?.respondsToSelector("bubbleTableViewRefreshed:")
+        if reponse! {
+            
+            self.bubbleDataSource?.bubbleTableViewRefreshed!(self)
+        }
+        
+        refreshControl.endRefreshing()
     }
     
     //MARK: - Public Method
@@ -219,14 +309,16 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                 let yPositionForChat = self.contentSize.height
                 if yPositionForChat > self.bounds.size.height {
                     
-                    let idx:NSIndexPath = NSIndexPath(forRow: self.numberOfRowsInSection(lastSectionIdx) - 1, inSection: lastSectionIdx)
-                    self.scrollToRowAtIndexPath(idx, atScrollPosition: .Bottom, animated: animated)
+                    self.setContentOffset(CGPointMake(0, yPositionForChat - self.bounds.size.height), animated: animated)
+
+//                    
+//                    let idx:NSIndexPath = NSIndexPath(forRow: self.numberOfRowsInSection(lastSectionIdx) - 1, inSection: lastSectionIdx)
+//                    self.scrollToRowAtIndexPath(idx, atScrollPosition: .Bottom, animated: animated)
                     
                     //                self.setContentOffset(CGPointMake(0, yPositionForChat - self.bounds.size.height), animated: animated)
                 }
             }
         })
-        
     }
     
     /*

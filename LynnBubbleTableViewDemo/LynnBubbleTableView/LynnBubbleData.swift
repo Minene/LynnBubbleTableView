@@ -18,24 +18,53 @@ public class LynnBubbleData: NSObject {
     
     var text: String?
     var profileImage: UIImage?
-    var image: UIImage?
+    var image: AnyObject?
     var date: NSDate?
     var userID:String?
     var type: BubbleDataType
+    var imageLoaded = false
     
     override init() {
         self.type = .Mine
     }
     
-    init(userID:String?, profile:UIImage?, text: String?, image: UIImage?, date: NSDate? , type:BubbleDataType = .Mine) {
+    convenience init(userID:String?, profile:UIImage?, text: String?, image: AnyObject?, date: NSDate? , type:BubbleDataType = .Mine) {
         // Default type is Mine
+        
+        self.init()
+        
         self.profileImage = profile
         self.text = text
-        self.image = image
         self.date = date
         self.userID = userID
         self.type = type
+        
+        if let data:AnyObject = image  {
+            if data.isKindOfClass(UIImage) {
+                self.image = data as! UIImage
+                self.imageLoaded = true
+            }else if data.isKindOfClass(NSString) {
+                
+                self.image = data
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+                    self.image = UIImage(data: NSData(contentsOfURL: NSURL(string: data as! String)!)!)!
+                    self.imageLoaded = true
+                }
+            }
+        }
+
+        
     }
     
+    func getImageHeight (tableViewWidth width:CGFloat) -> CGFloat {
+        
+        if self.imageLoaded {
+            return ((self.image?.size.height)! * (width / 2)) / (self.image?.size.width)!
+        }else{
+            return UIImage(named: "message_loading")!.size.height
+        }
+        
+    }
 }
 

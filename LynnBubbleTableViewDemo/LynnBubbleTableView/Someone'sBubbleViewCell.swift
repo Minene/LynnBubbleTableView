@@ -16,6 +16,8 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
         super.awakeFromNib()
         // Initialization code
         self.selectionStyle = .None
+        self.imgProfile.layer.cornerRadius = 21.5
+        self.imgProfile.clipsToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
