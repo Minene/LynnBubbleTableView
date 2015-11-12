@@ -4,8 +4,7 @@ Bubble Chat UI in swift using auto layout
 Simplely make an array using custom data class.
 and it will automatically display everything.
 
-![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111036/960c1a18-8947-11e5-81c7-7133ab124ee3.PNG)
-![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111037/960c5690-8947-11e5-81a0-6c8d8eee1773.PNG)
+![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
 #How to use
 1.Import LynnBubbleTableView folder. (12 files)
