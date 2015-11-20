@@ -10,7 +10,13 @@ import UIKit
 
 class Someone_sBubbleViewCell: MyBubbleViewCell {
 
+    
+    
     @IBOutlet weak var imgProfile: UIImageView!
+    @IBOutlet weak var lbNick: UILabel!
+    
+    @IBOutlet weak var constraintForNickHidden: NSLayoutConstraint! // default 24 when hidden set 0
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,6 +34,8 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
   
     override func setBubbleData(data: LynnBubbleData) {
         self.imgProfile.image = data.profileImage
+        self.lbNick.text = data.userNickName
         super.setBubbleData(data)
     }
+    
 }

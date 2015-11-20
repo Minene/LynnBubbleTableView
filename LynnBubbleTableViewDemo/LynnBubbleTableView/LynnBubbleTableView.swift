@@ -60,8 +60,10 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
     public var someoneElse_grouping = true
 //    public var someoneElse_grouping_interval:NSTimeInterval = 60.0
     private var arrBubbleSection:Array<Array<LynnBubbleData>> = []
+    private let NICK_NAME_HEIGHT:CGFloat = 24 // same as nick label height constant
     public var header_scrollable = true
     public var header_show_weekday = true
+    public var show_nickname = false
 //    public var image_wrapping = true // not yet implemented
     public var refreshable = false {
         didSet {
@@ -231,15 +233,61 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             
             let imgCell = cell as! Someone_sBubbleViewCell
             
+//            if show_nickname {
+//                imgCell.lbNick.hidden = false
+//                imgCell.constraintForNickHidden.constant = 24
+//                
+//            }else{
+//                imgCell.lbNick.hidden = true
+//                imgCell.constraintForNickHidden.constant = 0
+//            }
+//
+//            if someoneElse_grouping && indexPath.row > 1{
+//                let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
+//
+//                if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+//                    imgCell.imgProfile.hidden = true
+//                    if show_nickname {
+//                        imgCell.lbNick.hidden = true
+//                        imgCell.constraintForNickHidden.constant = 0
+//                    }
+//                }else{
+//                    imgCell.imgProfile.hidden = false
+//                }
+//            }else{
+//                imgCell.imgProfile.hidden = false
+//            }
+//            
+//            imgCell.layoutIfNeeded()
+
             if someoneElse_grouping && indexPath.row > 1{
                 let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                 
-                imgCell.imgProfile.hidden = previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID
+                if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+                    imgCell.imgProfile.hidden = true
+                    imgCell.constraintForNickHidden.constant = 0
+                    
+                }else{
+                    imgCell.imgProfile.hidden = false
+                    
+                    if show_nickname {
+                        imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
+                    }else{
+                        imgCell.constraintForNickHidden.constant = 0
+                    }
+                    
+                }
                 
             }else{
                 imgCell.imgProfile.hidden = false
+                
+                if show_nickname {
+                    imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
+                }else{
+                    imgCell.constraintForNickHidden.constant = 0
+                }
             }
-            
+            imgCell.layoutIfNeeded()
         }
         
         cell.setBubbleData(bubbleData)
@@ -256,7 +304,59 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
             
             if bubbleData.image != nil {
-                return bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
+                
+                var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
+                
+                
+                if bubbleData.type == .Mine {
+                    return height
+                }else{
+                    
+                    if someoneElse_grouping && indexPath.row > 1{
+                        let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
+                        
+                        if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+                            return height
+                            
+                        }else{
+                        
+                            if show_nickname {
+                                height += NICK_NAME_HEIGHT
+                            }
+                            return height
+                            
+                        }
+                        
+                    }else{
+                        
+                        if show_nickname {
+                            height += NICK_NAME_HEIGHT
+                        }
+                        return height
+                    }
+
+//                    
+//                    let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
+//                    if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+//                        var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
+//                        
+//                        if someoneElse_grouping {
+//                            
+//                        }
+//                        if show_nickname {
+//                            height += 24
+//                        }
+//                        return height
+//                        
+//                    }else{
+//                        var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
+//                        if show_nickname {
+//                            height += 24
+//                        }
+//                        return height
+//                    }
+
+                }
             }
         }
         return UITableViewAutomaticDimension
@@ -287,7 +387,6 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         let reponse = self.bubbleDataSource?.respondsToSelector("bubbleTableViewRefreshed:")
         if reponse! {
-            
             self.bubbleDataSource?.bubbleTableViewRefreshed!(self)
         }
         

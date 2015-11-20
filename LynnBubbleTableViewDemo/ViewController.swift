@@ -20,12 +20,12 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         
         self.tbBubbleDemo.bubbleDataSource = self
 
-        self.tbBubbleDemo.someoneElse_grouping = true // default is true
+        self.tbBubbleDemo.someoneElse_grouping = false // default is true
         self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
         self.tbBubbleDemo.header_show_weekday = true // default is true
         
         self.tbBubbleDemo.refreshable = true // default is false
-        
+        self.tbBubbleDemo.show_nickname = true // default is false        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -46,11 +46,11 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         for index in 0..<10 {
             
             if index % 4 == 0 {
-                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "123", profile: nil, text: messageMine, image: nil, date: NSDate())
+                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "123",userNickname: "me" , profile: nil, text: messageMine, image: nil, date: NSDate())
                 self.arrChatTest.append(bubbleData)
                 messageMine += " " + messageMine
             }else {
-                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: messageSomeone, image: nil, date: NSDate(), type: BubbleDataType.Someone)
+                let bubbleData:LynnBubbleData = LynnBubbleData(userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), text: messageSomeone, image: nil, date: NSDate(), type: BubbleDataType.Someone)
                 self.arrChatTest.append(bubbleData)
                 messageSomeone += " " + messageSomeone
             }
@@ -61,11 +61,14 @@ class ViewController: UIViewController, LynnBubbleViewDataSource {
         let image_height = UIImage(named: "cat_height.jpg")!
         
         
-        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: image_width, date: NSDate()))
-        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_height, date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "123", userNickname: "me",profile: nil, text: nil, image: image_width, date: NSDate()))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", userNickname: "you",profile: UIImage(named: "ico_girlprofile"), text: nil, image: image_height, date: NSDate(), type: BubbleDataType.Someone))
         
-        self.arrChatTest.append(LynnBubbleData(userID: "123", profile: nil, text: nil, image: "http://i.imgur.com/FkInYhB.jpg", date: NSDate()))
-        self.arrChatTest.append(LynnBubbleData(userID: "234", profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "123", userNickname: "me",profile: nil, text: nil, image: "http://i.imgur.com/FkInYhB.jpg", date: NSDate()))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", userNickname: "you",profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", userNickname: "you",profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", userNickname: "you",profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
+        self.arrChatTest.append(LynnBubbleData(userID: "234", userNickname: "you",profile: UIImage(named: "ico_girlprofile"), text: nil, image: "http://i.imgur.com/Mi8CAdV.jpg", date: NSDate(), type: BubbleDataType.Someone))
         
         
         self.tbBubbleDemo.reloadData()

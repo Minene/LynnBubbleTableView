@@ -16,6 +16,7 @@ class ImageBubbleTableViewCell: MyBubbleViewCell {
         super.awakeFromNib()
         // Initialization code
         self.selectionStyle = .None
+//        self.imgData.layer.borderWidth = 1.0
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

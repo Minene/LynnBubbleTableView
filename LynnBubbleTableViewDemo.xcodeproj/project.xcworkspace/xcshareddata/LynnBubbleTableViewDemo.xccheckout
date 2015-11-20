@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FDF59074-E6FD-40A2-9373-D87ABF2E2211</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LynnBubbleTableViewDemo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1AB1C437ACF060EAE31D9F4CADB0EE909BE50314</key>
+		<string>https://github.com/Minene/LynnBubbleTableView.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LynnBubbleTableViewDemo.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1AB1C437ACF060EAE31D9F4CADB0EE909BE50314</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Minene/LynnBubbleTableView.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1AB1C437ACF060EAE31D9F4CADB0EE909BE50314</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1AB1C437ACF060EAE31D9F4CADB0EE909BE50314</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LynnBubbleTableViewDemo</string>
+		</dict>
+	</array>
+</dict>
+</plist>

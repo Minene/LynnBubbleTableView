@@ -21,6 +21,7 @@ public class LynnBubbleData: NSObject {
     var image: AnyObject?
     var date: NSDate?
     var userID:String?
+    var userNickName:String?
     var type: BubbleDataType
     var imageLoaded = false
     
@@ -28,7 +29,7 @@ public class LynnBubbleData: NSObject {
         self.type = .Mine
     }
     
-    convenience init(userID:String?, profile:UIImage?, text: String?, image: AnyObject?, date: NSDate? , type:BubbleDataType = .Mine) {
+    convenience init(userID:String?, userNickname:String?, profile:UIImage?, text: String?, image: AnyObject?, date: NSDate? , type:BubbleDataType = .Mine) {
         // Default type is Mine
         
         self.init()
@@ -37,6 +38,7 @@ public class LynnBubbleData: NSObject {
         self.text = text
         self.date = date
         self.userID = userID
+        self.userNickName = userNickname
         self.type = type
         
         if let data:AnyObject = image  {
@@ -48,7 +50,12 @@ public class LynnBubbleData: NSObject {
                 self.image = data
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-                    self.image = UIImage(data: NSData(contentsOfURL: NSURL(string: data as! String)!)!)!
+                    let imageData:NSData? = NSData(contentsOfURL: NSURL(string: data as! String)!)
+                    if imageData == nil{
+                        self.image = UIImage(named: "message_loading")
+                    }else{
+                        self.image = UIImage(data: imageData!)
+                    }
                     self.imageLoaded = true
                 }
             }
@@ -60,10 +67,21 @@ public class LynnBubbleData: NSObject {
     func getImageHeight (tableViewWidth width:CGFloat) -> CGFloat {
         
         if self.imageLoaded {
-            return ((self.image?.size.height)! * (width / 2)) / (self.image?.size.width)!
-        }else{
-            return UIImage(named: "message_loading")!.size.height
+            return ((self.image!.size.height) * (width / 2)) / (self.image!
+                .size.width)
+        }else {
+            let tempImg = UIImage(named: "message_loading")!
+            return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
         }
+//        func getHeight (img:UIImage = self.image as! UIImage) -> CGFloat {
+//            return ((img.size.height) * (width / 2)) / (img.size.width)
+//        }
+//        
+//        if self.imageLoaded {
+//            return getHeight()
+//        }else{
+//            return getHeight()
+//        }
         
     }
 }

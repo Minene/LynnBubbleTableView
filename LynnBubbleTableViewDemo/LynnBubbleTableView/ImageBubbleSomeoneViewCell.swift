@@ -16,6 +16,7 @@ class ImageBubbleSomeoneViewCell: Someone_sBubbleViewCell {
         super.awakeFromNib()
         // Initialization code
         self.selectionStyle = .None
+//        self.imgData.layer.borderWidth = 1.0
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -45,6 +46,7 @@ class ImageBubbleSomeoneViewCell: Someone_sBubbleViewCell {
             
             //            self.imgData.setImageWithUrl(data.image as! NSURL, placeHolderImage: UIImage(named: "message_loading"))
         }
+        self.lbNick.text = data.userNickName
         self.imgProfile.image = data.profileImage
         self.lbTime.text = getTimeString(data.date!)
         
