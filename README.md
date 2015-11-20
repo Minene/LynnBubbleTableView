@@ -34,6 +34,8 @@ and it will automatically display everything.
         self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
         self.tbBubbleDemo.header_show_weekday = true // default is true
         self.tbBubbleDemo.refreshable = true // default is false
+        self.tbBubbleDemo.show_nickname = true // default is false        
+        
 
 #Convinience Function
         self.tbBubbleDemo.scrollBubbleViewToBottom(true) // true will animate
