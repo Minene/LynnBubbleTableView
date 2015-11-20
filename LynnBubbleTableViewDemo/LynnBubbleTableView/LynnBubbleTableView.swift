@@ -263,7 +263,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             if someoneElse_grouping && indexPath.row > 1{
                 let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                 
-                if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+                if previousData.type == BubbleDataType.Someone && bubbleData.userID != nil && previousData.userID == bubbleData.userID {
                     imgCell.imgProfile.hidden = true
                     imgCell.constraintForNickHidden.constant = 0
                     
@@ -315,7 +315,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                     if someoneElse_grouping && indexPath.row > 1{
                         let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                         
-                        if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
+                        if previousData.type == BubbleDataType.Someone && bubbleData.userID != nil && previousData.userID == bubbleData.userID {
                             return height
                             
                         }else{
