@@ -270,7 +270,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                 }else{
                     imgCell.imgProfile.hidden = false
                     
-                    if show_nickname {
+                    if show_nickname && bubbleData.userNickName != nil {
                         imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
                     }else{
                         imgCell.constraintForNickHidden.constant = 0
@@ -281,7 +281,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             }else{
                 imgCell.imgProfile.hidden = false
                 
-                if show_nickname {
+                if show_nickname && bubbleData.userNickName != nil {
                     imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
                 }else{
                     imgCell.constraintForNickHidden.constant = 0
@@ -320,7 +320,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                             
                         }else{
                         
-                            if show_nickname {
+                            if show_nickname && bubbleData.userNickName != nil {
                                 height += NICK_NAME_HEIGHT
                             }
                             return height
@@ -329,7 +329,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                         
                     }else{
                         
-                        if show_nickname {
+                        if show_nickname && bubbleData.userNickName != nil {
                             height += NICK_NAME_HEIGHT
                         }
                         return height
