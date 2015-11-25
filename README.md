@@ -65,4 +65,6 @@ example)
 #Copy Right
         do it whatever you want, but please don't remove top of the 7 comment lines :)
         
+        Thanks for helping GwaNi in MACBUGI
+        
 It is my first public library. Hope it will be helpful
