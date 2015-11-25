@@ -7,7 +7,7 @@ and it will automatically display everything.
 ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
 #How to use
-1.Import LynnBubbleTableView folder. (12 files)
+1.Import LynnBubbleTableView folder. (14 files)
 
 2.Add a tableview in your storyboard or xib whatever, and change custom class from UITableView to LynnBubbleTableView in identity inspector
 
@@ -28,6 +28,22 @@ and it will automatically display everything.
         }
     }
 6.that's it
+
+#Data Initialize
+1. If data type is mine, use LynnBubbleDataMine class initializer
+2. If data type is someone, use LynnBubbleDataSomeone class initializer
+3. If data contains only text or local image, use init method start with (userID).
+4. If data contains remote image, use init method start with (imageUrl).
+4-1. You can set placeholder and load failure image.
+4-2. If you want to use default placeholder and load failure image, please import "message_loading" and "message_loading_fail" image from imageAsset.
+
+example)
+        LynnBubbleDataMine(userID: "123",userNickname: "me" , profile: nil, text: "my message", image: nil, date: NSDate())
+        LynnBubbleDataSomeone(userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), text: "someone message", image: nil, date: NSDate())
+        
+        LynnBubbleDataMine(userID: "123",userNickname: "me" , profile: nil, text: nil, image: local Image, date: NSDate())
+        LynnBubbleDataSomeone(imageUrl: "http://remote image address", userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), date: NSDate())
+
 
 #Configuration
         self.tbBubbleDemo.someoneElse_grouping = true // default is true
