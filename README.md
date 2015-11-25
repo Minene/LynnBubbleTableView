@@ -34,10 +34,14 @@ and it will automatically display everything.
 2. If data type is someone, use LynnBubbleDataSomeone class initializer
 3. If data contains only text or local image, use init method start with (userID).
 4. If data contains remote image, use init method start with (imageUrl).
+
 4-1. You can set placeholder and load failure image.
+
 4-2. If you want to use default placeholder and load failure image, please import "message_loading" and "message_loading_fail" image from imageAsset.
 
+
 example)
+
         LynnBubbleDataMine(userID: "123",userNickname: "me" , profile: nil, text: "my message", image: nil, date: NSDate())
         LynnBubbleDataSomeone(userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), text: "someone message", image: nil, date: NSDate())
         
