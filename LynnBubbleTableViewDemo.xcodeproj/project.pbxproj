@@ -27,6 +27,8 @@
 		9A0122E51BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E31BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib */; };
 		9A0122E81BE9DF0F00123F62 /* cat_height.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E61BE9DF0F00123F62 /* cat_height.jpg */; };
 		9A0122E91BE9DF0F00123F62 /* cat_width.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A0122E71BE9DF0F00123F62 /* cat_width.jpg */; };
+		9A7C360D1C0594A600D1DDEE /* LynnBubbleDataMine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7C360B1C0594A600D1DDEE /* LynnBubbleDataMine.swift */; };
+		9A7C360E1C0594A600D1DDEE /* LynnBubbleDataSomeone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7C360C1C0594A600D1DDEE /* LynnBubbleDataSomeone.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,8 @@
 		9A0122E31BE9D82300123F62 /* ImageBubbleSomeoneViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageBubbleSomeoneViewCell.xib; sourceTree = "<group>"; };
 		9A0122E61BE9DF0F00123F62 /* cat_height.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat_height.jpg; sourceTree = "<group>"; };
 		9A0122E71BE9DF0F00123F62 /* cat_width.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cat_width.jpg; sourceTree = "<group>"; };
+		9A7C360B1C0594A600D1DDEE /* LynnBubbleDataMine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LynnBubbleDataMine.swift; sourceTree = "<group>"; };
+		9A7C360C1C0594A600D1DDEE /* LynnBubbleDataSomeone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LynnBubbleDataSomeone.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				9A0122CA1BE8B06900123F62 /* LynnBubbleData.swift */,
+				9A7C360B1C0594A600D1DDEE /* LynnBubbleDataMine.swift */,
+				9A7C360C1C0594A600D1DDEE /* LynnBubbleDataSomeone.swift */,
 				9A0122CB1BE8B06900123F62 /* LynnBubbleTableView.swift */,
 				9A0122CC1BE8B06900123F62 /* LynnBubbleViewHeaderCell.swift */,
 				9A0122CD1BE8B06900123F62 /* LynnBubbleViewHeaderCell.xib */,
@@ -258,11 +264,13 @@
 				9A0122D21BE8B06900123F62 /* LynnBubbleTableView.swift in Sources */,
 				9A0122D11BE8B06900123F62 /* LynnBubbleData.swift in Sources */,
 				9A0122D61BE8B06900123F62 /* MyBubbleViewCell.swift in Sources */,
+				9A7C360E1C0594A600D1DDEE /* LynnBubbleDataSomeone.swift in Sources */,
 				9A0122E01BE9D48200123F62 /* ImageBubbleTableViewCell.swift in Sources */,
 				9A0122D31BE8B06900123F62 /* LynnBubbleViewHeaderCell.swift in Sources */,
 				9A0122DA1BE8B23D00123F62 /* Someone'sBubbleViewCell.swift in Sources */,
 				9A0122AC1BE8AFF400123F62 /* ViewController.swift in Sources */,
 				9A0122AA1BE8AFF400123F62 /* AppDelegate.swift in Sources */,
+				9A7C360D1C0594A600D1DDEE /* LynnBubbleDataMine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

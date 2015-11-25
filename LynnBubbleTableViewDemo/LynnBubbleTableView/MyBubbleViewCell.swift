@@ -28,18 +28,8 @@ class MyBubbleViewCell: UITableViewCell {
     func setBubbleData(data:LynnBubbleData) {
         
         self.lbText.text = data.text
-        self.lbTime.text = self.getTimeString(data.date!)
+        self.lbTime.text = data.date._stringWithFormat("a h:mm")
         
     }
-    
-    func getTimeString(date:NSDate) -> String {
-    
-        let dateFormatter = NSDateFormatter()
-        let language = NSBundle.mainBundle().preferredLocalizations.first! as String
-        dateFormatter.locale = NSLocale(localeIdentifier: language)
-        let stringDate:NSDate = date
-        dateFormatter.dateFormat = "a h:mm"
-        return dateFormatter.stringFromDate(stringDate)
-    }
-    
+        
 }

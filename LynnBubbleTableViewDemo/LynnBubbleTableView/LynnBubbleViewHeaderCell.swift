@@ -25,19 +25,11 @@ class LynnBubbleViewHeaderCell: UITableViewCell {
     }
     
     func setDate(date:NSDate, withDay:Bool) {
-        let dateFormatter = NSDateFormatter()
-        let stringDate:NSDate = date
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-        var strDate = dateFormatter.stringFromDate(stringDate)
-//        self.lbDate.text = dateFormatter.stringFromDate(stringDate)
+        
+        var strDate = date._stringWithFormat("yyyy/MM/dd")
         
         if withDay {
-
-            let language = NSBundle.mainBundle().preferredLocalizations.first! as String
-            dateFormatter.locale = NSLocale(localeIdentifier: language)
-            
-            dateFormatter.dateFormat = "EEEEE";
-            strDate = strDate + " " + dateFormatter.stringFromDate(date).capitalizedString
+            strDate = strDate + " " + date._stringWithFormat("EEEEE").capitalizedString
         }
         self.lbDate.text = strDate
         

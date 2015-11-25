@@ -9,70 +9,80 @@
 import Foundation
 import UIKit
 
-enum BubbleDataType: Int{
+enum BubbleDataType: Int {
+    case None = -1
     case Mine = 0
     case Someone
 }
 
+public struct LynnBubbleUser {
+    private(set) public var profileImage: UIImage?
+    private(set) public var userID:String?
+    private(set) public var userNickName:String?
+}
+
 public class LynnBubbleData: NSObject {
+ 
+    internal var type: BubbleDataType = .None
+    private(set) public var user: LynnBubbleUser!
+    private(set) public var date: NSDate!
     
-    var text: String?
-    var profileImage: UIImage?
-    var image: AnyObject?
-    var date: NSDate?
-    var userID:String?
-    var userNickName:String?
-    var type: BubbleDataType
-    var imageLoaded = false
+    private(set) public var text: String?
+    private(set) public var image: UIImage?
+    private(set) public var imageURL: NSURL?
+    private(set) public var imageLoaded: Bool = false
     
-    override init() {
-        self.type = .Mine
-    }
     
-    convenience init(userID:String?, userNickname:String?, profile:UIImage?, text: String?, image: AnyObject?, date: NSDate? , type:BubbleDataType = .Mine) {
-        // Default type is Mine
-        
+    convenience init(userID: String?, userNickname: String?, profile: UIImage?, text: String?, image: UIImage?, date: NSDate) {
         self.init()
         
-        self.profileImage = profile
-        self.text = text
-        self.date = date
-        self.userID = userID
-        self.userNickName = userNickname
-        self.type = type
+        self.user   = LynnBubbleUser(profileImage: profile, userID: userID, userNickName: userNickname)
+        self.date   = date
         
-        if let data:AnyObject = image  {
-            if data.isKindOfClass(UIImage) {
-                self.image = data as! UIImage
-                self.imageLoaded = true
-            }else if data.isKindOfClass(NSString) {
-                
-                self.image = data
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-                    let imageData:NSData? = NSData(contentsOfURL: NSURL(string: data as! String)!)
-                    if imageData == nil{
-                        self.image = UIImage(named: "message_loading")
-                    }else{
-                        self.image = UIImage(data: imageData!)
-                    }
-                    self.imageLoaded = true
-                }
-            }
-        }
+        self.text   = text
+        self.image  = image
+        imageLoaded = true
+    }
+    
+    convenience init(imageUrl: String?, userID: String?, userNickname: String?, profile: UIImage?, placeHolderImage:UIImage = UIImage(named: "message_loading")!, failureImage:UIImage = UIImage(named: "message_loading_fail")!, date: NSDate) {
 
+        self.init(userID: userID, userNickname: userNickname, profile: profile, text: nil, image: nil, date: date)
         
+        func loadFail() {
+            self.image = failureImage
+            self.imageLoaded = true
+        }
+        
+        guard let imageUrl = imageUrl else {
+            loadFail()
+            return
+        }
+        self.imageURL = NSURL(string: imageUrl)
+        self.image = placeHolderImage
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+            
+            guard let imageData = NSData(contentsOfURL: self.imageURL!) else {
+                loadFail()
+                return
+            }
+            self.image = UIImage(data: imageData)
+            self.imageLoaded = true
+        }
     }
     
     func getImageHeight (tableViewWidth width:CGFloat) -> CGFloat {
         
-        if self.imageLoaded {
-            return ((self.image!.size.height) * (width / 2)) / (self.image!
-                .size.width)
-        }else {
-            let tempImg = UIImage(named: "message_loading")!
-            return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
-        }
+        return ((self.image!.size.height) * (width / 2)) / (self.image!
+            .size.width)
+        
+//        if self.imageLoaded {
+//            return ((self.image!.size.height) * (width / 2)) / (self.image!
+//                .size.width)
+//        }else {
+//            let tempImg = UIImage(named: "message_loading")!
+//            return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
+//        }
 //        func getHeight (img:UIImage = self.image as! UIImage) -> CGFloat {
 //            return ((img.size.height) * (width / 2)) / (img.size.width)
 //        }

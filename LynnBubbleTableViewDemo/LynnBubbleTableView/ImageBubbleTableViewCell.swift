@@ -27,25 +27,22 @@ class ImageBubbleTableViewCell: MyBubbleViewCell {
     
     override func setBubbleData(data: LynnBubbleData) {
         
-        self.lbTime.text = getTimeString(data.date!)
-        if data.image!.isKindOfClass(UIImage) {
-            self.imgData.image = data.image as? UIImage
-        }else {
-            
-            func checkImageUpdated () {
-                if data.imageLoaded {
-                    self.imgData.image = data.image as? UIImage
-                    NSNotificationCenter.defaultCenter().postNotificationName("_CellDidLoadImageNotification", object: self)
-                    return
-                }else{
-                    self.imgData.image = UIImage(named: "message_loading")
-                    _delay(0.5, closure: { () -> Void in
-                        checkImageUpdated()
-                    })
-                }
+        self.lbTime.text = data.date._stringWithFormat("a h:mm")
+        self.imgData.image = data.image
+        
+        func checkImageUpdated () {
+            if data.imageLoaded {
+                self.imgData.image = data.image
+                NSNotificationCenter.defaultCenter().postNotificationName("_CellDidLoadImageNotification", object: self)
+                return
+            }else{
+                _delay(0.5, closure: { () -> Void in
+                    checkImageUpdated()
+                })
             }
-            
-            checkImageUpdated()
         }
+        
+        checkImageUpdated()
+
     }
 }

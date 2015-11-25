@@ -33,9 +33,12 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
     }
   
     override func setBubbleData(data: LynnBubbleData) {
-        self.imgProfile.image = data.profileImage
-        self.lbNick.text = data.userNickName
+        
         super.setBubbleData(data)
+        
+        self.imgProfile.image = data.user.profileImage
+        self.lbNick.text = data.user.userNickName
+        
     }
     
 }

@@ -9,6 +9,17 @@
 import UIKit
 import ObjectiveC
 
+extension NSDate {
+    
+    func _stringWithFormat(format: String) -> String {
+        let formatter = NSDateFormatter()
+        let language = NSBundle.mainBundle().preferredLocalizations.first! as String
+        formatter.locale = NSLocale(localeIdentifier: language)
+        formatter.dateFormat = format;
+        return formatter.stringFromDate(self)
+    }
+}
+
 typealias dispatch_cancelable_closure = (cancel : Bool) -> Void
 func _delay(time:NSTimeInterval, closure:()->Void) ->  dispatch_cancelable_closure? {
     
@@ -263,14 +274,14 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             if someoneElse_grouping && indexPath.row > 1{
                 let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                 
-                if previousData.type == BubbleDataType.Someone && bubbleData.userID != nil && previousData.userID == bubbleData.userID {
+                if previousData.type == BubbleDataType.Someone && bubbleData.user.userID != nil && previousData.user.userID == bubbleData.user.userID {
                     imgCell.imgProfile.hidden = true
                     imgCell.constraintForNickHidden.constant = 0
                     
                 }else{
                     imgCell.imgProfile.hidden = false
                     
-                    if show_nickname && bubbleData.userNickName != nil {
+                    if show_nickname && bubbleData.user.userNickName != nil {
                         imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
                     }else{
                         imgCell.constraintForNickHidden.constant = 0
@@ -281,7 +292,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
             }else{
                 imgCell.imgProfile.hidden = false
                 
-                if show_nickname && bubbleData.userNickName != nil {
+                if show_nickname && bubbleData.user.userNickName != nil {
                     imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
                 }else{
                     imgCell.constraintForNickHidden.constant = 0
@@ -315,12 +326,12 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                     if someoneElse_grouping && indexPath.row > 1{
                         let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                         
-                        if previousData.type == BubbleDataType.Someone && bubbleData.userID != nil && previousData.userID == bubbleData.userID {
+                        if previousData.type == BubbleDataType.Someone && bubbleData.user.userID != nil && previousData.user.userID == bubbleData.user.userID {
                             return height
                             
                         }else{
                         
-                            if show_nickname && bubbleData.userNickName != nil {
+                            if show_nickname && bubbleData.user.userNickName != nil {
                                 height += NICK_NAME_HEIGHT
                             }
                             return height
@@ -329,7 +340,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                         
                     }else{
                         
-                        if show_nickname && bubbleData.userNickName != nil {
+                        if show_nickname && bubbleData.user.userNickName != nil {
                             height += NICK_NAME_HEIGHT
                         }
                         return height
