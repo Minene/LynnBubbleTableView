@@ -88,7 +88,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(LynnBubbleTableView.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         return refreshControl
     }()
@@ -128,7 +128,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         self.separatorStyle = .None
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "_imageDidLoadNotification:", name:"_CellDidLoadImageNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LynnBubbleTableView._imageDidLoadNotification(_:)), name:"_CellDidLoadImageNotification", object: nil)
         
     }
     
@@ -163,7 +163,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                     
                     let dateFormatter = NSDateFormatter()
                     dateFormatter.dateFormat = "yyyy-MM-dd"
-                    let compareDate = tempData.date
+                    var compareDate = tempData.date
                     
                     for index in 1 ..< numberOfRows {
                         let comparedData = datas[index]
@@ -173,6 +173,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
                         if textOrigin != textCompare {
                             self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
                             arrBubbleDatasGroupByDay = []
+                            compareDate = comparedData.date
                         }
                         arrBubbleDatasGroupByDay.append(comparedData)
                         
@@ -195,7 +196,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         if var count:Int = self.arrBubbleSection[section].count {
             if count != 0 {
-                ++count // + 1 for header Cell
+                count += 1 // + 1 for header Cell
             }
             return count
         }else {
@@ -382,7 +383,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
     }
     
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let reponse = self.bubbleDataSource?.respondsToSelector("bubbleTableView:didSelectRowAtIndexPath:")
+        let reponse = self.bubbleDataSource?.respondsToSelector(#selector(LynnBubbleViewDataSource.bubbleTableView(_:didSelectRowAtIndexPath:)))
         if reponse! {
             self.bubbleDataSource?.bubbleTableView!(self, didSelectRowAtIndexPath: indexPath)
         }
@@ -396,7 +397,7 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         // Simply adding an object to the data source for this example
         
-        let reponse = self.bubbleDataSource?.respondsToSelector("bubbleTableViewRefreshed:")
+        let reponse = self.bubbleDataSource?.respondsToSelector(#selector(LynnBubbleViewDataSource.bubbleTableViewRefreshed(_:)))
         if reponse! {
             self.bubbleDataSource?.bubbleTableViewRefreshed!(self)
         }

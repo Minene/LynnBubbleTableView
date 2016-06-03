@@ -57,6 +57,7 @@ public class LynnBubbleData: NSObject {
             loadFail()
             return
         }
+        
         self.imageURL = NSURL(string: imageUrl)
         self.image = placeHolderImage
         
