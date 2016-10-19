@@ -6,104 +6,56 @@
 //  Copyright © 2015 Lou Hwang. All rights reserved.
 //
 
+
 import UIKit
-import ObjectiveC
 
-extension NSDate {
+public protocol LynnBubbleViewDataSource : class {
     
-    func _stringWithFormat(format: String) -> String {
-        let formatter = NSDateFormatter()
-        let language = NSBundle.mainBundle().preferredLocalizations.first! as String
-        formatter.locale = NSLocale(localeIdentifier: language)
-        formatter.dateFormat = format;
-        return formatter.stringFromDate(self)
-    }
+    func bubbleTableView(numberOfRows bubbleTableView:LynnBubbleTableView) -> Int
+    func bubbleTableView(dataAt index:Int, bubbleTableView:LynnBubbleTableView) -> LynnBubbleData
 }
 
-typealias dispatch_cancelable_closure = (cancel : Bool) -> Void
-func _delay(time:NSTimeInterval, closure:()->Void) ->  dispatch_cancelable_closure? {
+@objc protocol LynnBubbleViewDelegate : NSObjectProtocol {
     
-    func dispatch_later(clsr:()->Void) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(time * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), clsr)
-    }
-    
-    var closure:dispatch_block_t? = closure
-    var cancelableClosure:dispatch_cancelable_closure?
-    
-    let delayedClosure:dispatch_cancelable_closure = { cancel in
-        if closure != nil {
-            if (cancel == false) {
-                dispatch_async(dispatch_get_main_queue(), closure!);
-            }
-        }
-        closure = nil
-        cancelableClosure = nil
-    }
-    
-    cancelableClosure = delayedClosure
-    
-    dispatch_later {
-        if let delayedClosure = cancelableClosure {
-            delayedClosure(cancel: false)
-        }
-    }
-    
-    return cancelableClosure;
+    @objc optional func bubbleTableView(_ bubbleTableView:LynnBubbleTableView, didTouchedUserProfile userData:LynnUserData, at index:Int)
+    @objc optional func bubbleTableView(_ bubbleTableView:LynnBubbleTableView, didTouchedAttachedImage image:UIImage, at index:Int)
+    @objc optional func bubbleTableView(_ bubbleTableView:LynnBubbleTableView, didTouchedURLLink urlLink:String, at index:Int)
+    @objc optional func bubbleTableView(_ bubbleTableView:LynnBubbleTableView, didSelectRowAt index:Int)
+    @objc optional func bubbleTableView(reachedTop bubbleTableView:LynnBubbleTableView)
+    @objc optional func bubbleTableView(reachedBottom bubbleTableView:LynnBubbleTableView)
 }
 
 
-@objc public protocol LynnBubbleViewDataSource : NSObjectProtocol {
+open class LynnBubbleTableView: UITableView {
     
-    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int
-    func bubbleTableView(bubbleTableView:LynnBubbleTableView, dataAtIndex:Int) -> LynnBubbleData?
-    optional func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
-    optional func bubbleTableViewRefreshed(bubbleTableView:LynnBubbleTableView)
-}
-
-public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewDataSource {
-
-    internal var bubbleDataSource:LynnBubbleViewDataSource?
-    public var someoneElse_grouping = true
-//    public var someoneElse_grouping_interval:NSTimeInterval = 60.0
-    private var arrBubbleSection:Array<Array<LynnBubbleData>> = []
-    private let NICK_NAME_HEIGHT:CGFloat = 24 // same as nick label height constant
-    public var header_scrollable = true
-    public var header_show_weekday = true
-    public var show_nickname = false
-//    public var image_wrapping = true // not yet implemented
-    public var refreshable = false {
-        didSet {
-            if refreshable {
-                self.addSubview(self.refreshControl)
-            }else{
-                self.refreshControl.removeFromSuperview()
-            }
-        }
-    }
+    weak var bubbleDataSource:LynnBubbleViewDataSource?
     
-    lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(LynnBubbleTableView.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-        
-        return refreshControl
-    }()
+    weak var bubbleDelegate: LynnBubbleViewDelegate?
+    
+    public var grouping:Bool = true
+    public var grouping_interval:Double = 60
+    public var scrollHeader = true
+    public var showWeekDayHeader = true
+    public var showNickName = true
+    fileprivate var NICK_NAME_HEIGHT:CGFloat = 24 // same as nick label height constant
+    
+    fileprivate var arrBubbleSection = [[LynnBubbleData]]()
+    
+    //    public var image_wrapping = true // not yet implemented
+    
     
     init() {
-        super.init(frame: CGRectZero, style: UITableViewStyle.Plain)
+        super.init(frame: CGRect(), style: .plain)
         initialize()
     }
+    
     required public init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
         initialize()
     }
     
     init(frame: CGRect) {
-        super.init(frame: frame, style: UITableViewStyle.Plain)
+        super.init(frame: frame, style: .plain)
         initialize()
     }
     
@@ -120,105 +72,111 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         self.rowHeight = UITableViewAutomaticDimension
         self.estimatedRowHeight = 80
         
-        self.registerNib(UINib(nibName: "LynnBubbleViewHeaderCell", bundle: nil), forCellReuseIdentifier: "lynnBubbleHeaderCell")
-        self.registerNib(UINib(nibName: "MyBubbleViewCell", bundle: nil), forCellReuseIdentifier: "myBubbleCell")
-        self.registerNib(UINib(nibName: "Someone'sBubbleViewCell", bundle: nil), forCellReuseIdentifier: "someonesBubbleCell")
-        self.registerNib(UINib(nibName: "ImageBubbleTableViewCell", bundle: nil), forCellReuseIdentifier: "myImageCell")
-        self.registerNib(UINib(nibName: "ImageBubbleSomeoneViewCell", bundle: nil), forCellReuseIdentifier: "someoneImageCell")
+        self.register(UINib(nibName: "LynnBubbleViewHeaderCell", bundle: nil), forCellReuseIdentifier: "lynnBubbleHeaderCell")
+        self.register(UINib(nibName: "MyBubbleViewCell", bundle: nil), forCellReuseIdentifier: "myBubbleCell")
+        self.register(UINib(nibName: "Someone'sBubbleViewCell", bundle: nil), forCellReuseIdentifier: "someonesBubbleCell")
+        self.register(UINib(nibName: "ImageBubbleTableViewCell", bundle: nil), forCellReuseIdentifier: "myImageCell")
+        self.register(UINib(nibName: "ImageBubbleSomeoneViewCell", bundle: nil), forCellReuseIdentifier: "someoneImageCell")
         
-        self.separatorStyle = .None
+        self.separatorStyle = .none
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LynnBubbleTableView._imageDidLoadNotification(_:)), name:"_CellDidLoadImageNotification", object: nil)
+        
+        
+                NotificationCenter.default.addObserver(self, selector: #selector(_imageDidLoadNotification(notification:)), name:NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
         
     }
     
     deinit{
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "_CellDidLoadImageNotification", object: nil)
-        
+                NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
     }
     
-        
-    override public func reloadData() {
-        
-        if self.bubbleDataSource != nil && self.bubbleDataSource?.numberOfRowsForBubbleTable(self) > 0 {
-            
-            if let numberOfRows:Int = self.bubbleDataSource!.numberOfRowsForBubbleTable(self) {
-                
-                var datas:Array<LynnBubbleData> = []
-                
-                for index in 0 ..< numberOfRows {
-                    let bubbleData = self.bubbleDataSource!.bubbleTableView(self, dataAtIndex: index)
-                    datas.append(bubbleData!)
-                }
-                
-                datas.sortInPlace({$0.date!.timeIntervalSinceNow < $1.date!.timeIntervalSinceNow})
-                
-                var arrBubbleDatasGroupByDay:Array<LynnBubbleData> = []
-                self.arrBubbleSection = []
-                
-                let tempData:LynnBubbleData = datas[0]
-                arrBubbleDatasGroupByDay.append(tempData)
-                
-                if datas.count > 1 {
-                    
-                    let dateFormatter = NSDateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd"
-                    var compareDate = tempData.date
-                    
-                    for index in 1 ..< numberOfRows {
-                        let comparedData = datas[index]
-                        let textOrigin = dateFormatter.stringFromDate(comparedData.date!)
-                        let textCompare = dateFormatter.stringFromDate(compareDate!)
-                        
-                        if textOrigin != textCompare {
-                            self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
-                            arrBubbleDatasGroupByDay = []
-                            compareDate = comparedData.date
-                        }
-                        arrBubbleDatasGroupByDay.append(comparedData)
-                        
-                        if index == numberOfRows-1 {
-                            self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
-                        }
-                    }
-                    
-                }else{
-                    self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
-                }
-
+    func _imageDidLoadNotification(notification: Notification) {
+        if  let cell = notification.object as? UITableViewCell {
+            if let indexPath = self.indexPath(for: cell){
+                super.reloadRows(at: [indexPath], with: .none)
+//                let section = IndexSet(integer: indexPath.section)
+//                self.beginUpdates()
+//                self.reloadSections(section, with: .none)
+//                self.endUpdates()
             }
-
         }
+    }
+    
+    override open func reloadData() {
+        
+        guard self.bubbleDataSource != nil else { return super.reloadData() }
+        
+        let numberOfRows = self.bubbleDataSource!.bubbleTableView(numberOfRows: self)
+        if numberOfRows > 0 {
+            
+            var datas = [LynnBubbleData]()
+            
+            for index in 0 ..< numberOfRows {
+                let bubbleData = self.bubbleDataSource!.bubbleTableView(dataAt: index , bubbleTableView: self)
+                datas.append(bubbleData)
+            }
+            
+            datas.sort(by: {$0.date.timeIntervalSinceNow < $1.date.timeIntervalSinceNow})
+            
+            var arrBubbleDatasGroupByDay = [LynnBubbleData]()
+            self.arrBubbleSection = [[]]
+            
+            let tempData:LynnBubbleData = datas[0]
+            arrBubbleDatasGroupByDay.append(tempData)
+            
+            if datas.count > 1 {
+                
+                var compareDate = tempData.date
+                
+                for index in 1 ..< numberOfRows {
+                    let comparedData = datas[index]
+                    let textOrigin = comparedData.date._stringFromDateFormat("yyyy-MM-dd")
+                    let textCompare = compareDate._stringFromDateFormat("yyyy-MM-dd")
+                    
+                    if textOrigin != textCompare {
+                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                        arrBubbleDatasGroupByDay = []
+                        compareDate = comparedData.date
+                    }
+                    arrBubbleDatasGroupByDay.append(comparedData)
+                    
+                    if index == numberOfRows-1 {
+                        self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+                    }
+                }
+                
+            }else{
+                self.arrBubbleSection.append(arrBubbleDatasGroupByDay)
+            }
+            
+        }
+        
         super.reloadData()
     }
+}
+
+extension LynnBubbleTableView : UITableViewDataSource {
     
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if var count:Int = self.arrBubbleSection[section].count {
-            if count != 0 {
-                count += 1 // + 1 for header Cell
-            }
-            return count
-        }else {
-            return 0
+        var count:Int = self.arrBubbleSection[section].count
+        if count != 0 {
+            count += 1 // + 1 for header Cell
         }
+        return count
     }
     
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        
-        if let count:Int = self.arrBubbleSection.count {
-            return count
-        }else {
-            return 0
-        }
+    
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return self.arrBubbleSection.count
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCellWithIdentifier("lynnBubbleHeaderCell") as? LynnBubbleViewHeaderCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "lynnBubbleHeaderCell") as? LynnBubbleViewHeaderCell
             let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][0]
-            cell!.setDate(bubbleData.date!, withDay:header_show_weekday)
+            cell!.setDate(date: bubbleData.date, withDay:showWeekDayHeader)
             return cell!
         }
         
@@ -226,218 +184,106 @@ public class LynnBubbleTableView: UITableView, UITableViewDelegate, UITableViewD
         
         var cell:MyBubbleViewCell = MyBubbleViewCell()
         
-        if bubbleData.type == BubbleDataType.Mine {
-
-            if bubbleData.image == nil {
-                cell = tableView.dequeueReusableCellWithIdentifier("myBubbleCell") as! MyBubbleViewCell
+        if bubbleData.userDataType == .me {
+            
+            if bubbleData.imageData == nil {
+                cell = tableView.dequeueReusableCell(withIdentifier: "myBubbleCell") as! MyBubbleViewCell
             }else{
-                cell = tableView.dequeueReusableCellWithIdentifier("myImageCell") as! ImageBubbleTableViewCell
+                cell = tableView.dequeueReusableCell(withIdentifier: "myImageCell") as! ImageBubbleTableViewCell
             }
             
+            cell.setBubbleData(data: bubbleData)
+            
+            return cell
             
         }else {
-
-            if bubbleData.image == nil {
-                cell = tableView.dequeueReusableCellWithIdentifier("someonesBubbleCell") as! Someone_sBubbleViewCell
+            
+            if bubbleData.imageData == nil {
+                cell = tableView.dequeueReusableCell(withIdentifier: "someonesBubbleCell") as! Someone_sBubbleViewCell
             }else{
-                cell = tableView.dequeueReusableCellWithIdentifier("someoneImageCell") as! ImageBubbleSomeoneViewCell
+                cell = tableView.dequeueReusableCell(withIdentifier: "someoneImageCell") as! ImageBubbleSomeoneViewCell
             }
             
             let imgCell = cell as! Someone_sBubbleViewCell
             
-//            if show_nickname {
-//                imgCell.lbNick.hidden = false
-//                imgCell.constraintForNickHidden.constant = 24
-//                
-//            }else{
-//                imgCell.lbNick.hidden = true
-//                imgCell.constraintForNickHidden.constant = 0
-//            }
-//
-//            if someoneElse_grouping && indexPath.row > 1{
-//                let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
-//
-//                if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
-//                    imgCell.imgProfile.hidden = true
-//                    if show_nickname {
-//                        imgCell.lbNick.hidden = true
-//                        imgCell.constraintForNickHidden.constant = 0
-//                    }
-//                }else{
-//                    imgCell.imgProfile.hidden = false
-//                }
-//            }else{
-//                imgCell.imgProfile.hidden = false
-//            }
-//            
-//            imgCell.layoutIfNeeded()
-
-            if someoneElse_grouping && indexPath.row > 1{
+            if grouping && indexPath.row > 1 {
                 let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                 
-                if previousData.type == BubbleDataType.Someone && bubbleData.user.userID != nil && previousData.user.userID == bubbleData.user.userID {
-                    imgCell.imgProfile.hidden = true
-                    imgCell.constraintForNickHidden.constant = 0
-                    
-                }else{
-                    imgCell.imgProfile.hidden = false
-                    
-                    if show_nickname && bubbleData.user.userNickName != nil {
-                        imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
-                    }else{
-                        imgCell.constraintForNickHidden.constant = 0
-                    }
-                    
-                }
+                imgCell.setBubbleData(data: bubbleData, grouping: bubbleData.isSameUser(previousData), showNickName: showNickName && bubbleData.userData.userNickName != nil )
                 
             }else{
-                imgCell.imgProfile.hidden = false
                 
-                if show_nickname && bubbleData.user.userNickName != nil {
-                    imgCell.constraintForNickHidden.constant = NICK_NAME_HEIGHT
-                }else{
-                    imgCell.constraintForNickHidden.constant = 0
-                }
+                imgCell.setBubbleData(data: bubbleData, grouping: false, showNickName: showNickName && bubbleData.userData.userNickName != nil )
             }
-            imgCell.layoutIfNeeded()
+            
+//            cell.setBubbleData(data: bubbleData)
+            
+            return cell
         }
-        
-        cell.setBubbleData(bubbleData)
-        
-        
-        
-        return cell
     }
-    
-    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//    @objc(tableView:heightForRowAtIndexPath:) public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        return 0
+//    }
+//
+    @objc(tableView:heightForRowAtIndexPath:)
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         if indexPath.row > 1 {
             
             let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
             
-            if bubbleData.image != nil {
+            if bubbleData.imageData != nil {
                 
-                var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
+                var height:CGFloat = bubbleData.imageData!.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
                 
-                
-                if bubbleData.type == .Mine {
+                if bubbleData.userDataType == .me {
                     return height
                 }else{
                     
-                    if someoneElse_grouping && indexPath.row > 1{
+                    if grouping && indexPath.row > 1{
                         let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
                         
-                        if previousData.type == BubbleDataType.Someone && bubbleData.user.userID != nil && previousData.user.userID == bubbleData.user.userID {
+                        if bubbleData.isSameUser(previousData) {
                             return height
                             
                         }else{
-                        
-                            if show_nickname && bubbleData.user.userNickName != nil {
+                            
+                            if showNickName && bubbleData.userData.userNickName != nil {
                                 height += NICK_NAME_HEIGHT
                             }
                             return height
-                            
                         }
                         
                     }else{
                         
-                        if show_nickname && bubbleData.user.userNickName != nil {
+                        if showNickName && bubbleData.userData.userNickName != nil {
                             height += NICK_NAME_HEIGHT
                         }
                         return height
                     }
-
-//                    
-//                    let previousData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 2]
-//                    if previousData.type == BubbleDataType.Someone && previousData.userID == bubbleData.userID {
-//                        var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
-//                        
-//                        if someoneElse_grouping {
-//                            
-//                        }
-//                        if show_nickname {
-//                            height += 24
-//                        }
-//                        return height
-//                        
-//                    }else{
-//                        var height:CGFloat = bubbleData.getImageHeight(tableViewWidth: tableView.bounds.size.width) + 10
-//                        if show_nickname {
-//                            height += 24
-//                        }
-//                        return height
-//                    }
-
+                    
+                    
                 }
             }
         }
         return UITableViewAutomaticDimension
     }
-    
-    func _imageDidLoadNotification(notification: NSNotification) {
-        if  let cell = notification.object as? UITableViewCell {
-            if let indexPath = self.indexPathForCell(cell){
-                self.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-            }
-        }
-    }
-    
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let reponse = self.bubbleDataSource?.respondsToSelector(#selector(LynnBubbleViewDataSource.bubbleTableView(_:didSelectRowAtIndexPath:)))
-        if reponse! {
-            self.bubbleDataSource?.bubbleTableView!(self, didSelectRowAtIndexPath: indexPath)
-        }
-        
-        
-    }
-    
-    func handleRefresh(refreshControl: UIRefreshControl) {
-        // Do some reloading of data and update the table view's data source
-        // Fetch more objects from a web service, for example...
-        
-        // Simply adding an object to the data source for this example
-        
-        let reponse = self.bubbleDataSource?.respondsToSelector(#selector(LynnBubbleViewDataSource.bubbleTableViewRefreshed(_:)))
-        if reponse! {
-            self.bubbleDataSource?.bubbleTableViewRefreshed!(self)
-        }
-        
-        refreshControl.endRefreshing()
-    }
-    
-    //MARK: - Public Method
-    
-    func scrollBubbleViewToBottom(animated:Bool){
-        
-        let delay = 0.1 * Double(NSEC_PER_SEC)
-        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
-        dispatch_after(time, dispatch_get_main_queue(), {
-            let lastSectionIdx = self.numberOfSections - 1
-            
-            if lastSectionIdx >= 0 {
-                
-                let yPositionForChat = self.contentSize.height
-                if yPositionForChat > self.bounds.size.height {
-                    
-                    self.setContentOffset(CGPointMake(0, yPositionForChat - self.bounds.size.height), animated: animated)
+}
 
-//                    
-//                    let idx:NSIndexPath = NSIndexPath(forRow: self.numberOfRowsInSection(lastSectionIdx) - 1, inSection: lastSectionIdx)
-//                    self.scrollToRowAtIndexPath(idx, atScrollPosition: .Bottom, animated: animated)
-                    
-                    //                self.setContentOffset(CGPointMake(0, yPositionForChat - self.bounds.size.height), animated: animated)
-                }
-            }
-        })
+extension LynnBubbleTableView : UITableViewDelegate
+{
+    fileprivate func getDataRow(indexPath:IndexPath) -> Int {
+        var idxCnt = 0
+        for index in 0..<indexPath.section {
+            idxCnt += arrBubbleSection[index].count
+        }
+        idxCnt += indexPath.row
+        return idxCnt
     }
     
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.bubbleDelegate?.bubbleTableView?(self, didSelectRowAt: self.getDataRow(indexPath: indexPath))
+        tableView.deselectRow(at: indexPath, animated: false)
     }
-    */
-
 }

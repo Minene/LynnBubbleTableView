@@ -8,41 +8,32 @@
 
 import UIKit
 
-class ImageBubbleTableViewCell: MyBubbleViewCell {
-
-    @IBOutlet weak var imgData: UIImageView!
+class ImageBubbleTableViewCell: MyBubbleViewCell, LynnAttachedImageProtocol {
+    
+    @IBOutlet weak var imgView: UIImageView!
+    var imageData: LynnAttachedImageData? {
+        didSet {
+            imageUpdate(to: imgView)
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.selectionStyle = .None
-//        self.imgData.layer.borderWidth = 1.0
+        self.selectionStyle = .none
+        //        self.imgData.layer.borderWidth = 1.0
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
     override func setBubbleData(data: LynnBubbleData) {
         
-        self.lbTime.text = data.date._stringWithFormat("a h:mm")
-        self.imgData.image = data.image
+        self.lbTime.text = data.date._stringFromDateFormat("a h:mm")
+        self.imageData = data.imageData
         
-        func checkImageUpdated () {
-            if data.imageLoaded {
-                self.imgData.image = data.image
-                NSNotificationCenter.defaultCenter().postNotificationName("_CellDidLoadImageNotification", object: self)
-                return
-            }else{
-                _delay(0.5, closure: { () -> Void in
-                    checkImageUpdated()
-                })
-            }
-        }
-        
-        checkImageUpdated()
-
     }
 }

@@ -9,27 +9,27 @@
 import UIKit
 
 class MyBubbleViewCell: UITableViewCell {
-
+    
     @IBOutlet weak var lbText: UILabel!
     @IBOutlet weak var lbTime: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.selectionStyle = .None
+        self.selectionStyle = .none
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
     func setBubbleData(data:LynnBubbleData) {
         
         self.lbText.text = data.text
-        self.lbTime.text = data.date._stringWithFormat("a h:mm")
+        self.lbTime.text = data.date._stringFromDateFormat("a h:mm")
         
     }
-        
+    
 }

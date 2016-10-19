@@ -9,8 +9,6 @@
 import UIKit
 
 class Someone_sBubbleViewCell: MyBubbleViewCell {
-
-    
     
     @IBOutlet weak var imgProfile: UIImageView!
     @IBOutlet weak var lbNick: UILabel!
@@ -21,23 +19,41 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.selectionStyle = .None
+        self.selectionStyle = .none
         self.imgProfile.layer.cornerRadius = 21.5
         self.imgProfile.clipsToBounds = true
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-  
+    
+    func setBubbleData(data:LynnBubbleData, grouping:Bool, showNickName:Bool) {
+        
+        self.imgProfile.isHidden = grouping
+        
+        if grouping {
+            self.constraintForNickHidden.constant = 0
+        }else{
+            if showNickName {
+                self.constraintForNickHidden.constant = 24
+            }else{
+                self.constraintForNickHidden.constant = 0
+            }
+            
+        }
+        
+        self.setBubbleData(data: data)
+    }
+    
     override func setBubbleData(data: LynnBubbleData) {
         
-        super.setBubbleData(data)
+        super.setBubbleData(data: data)
         
-        self.imgProfile.image = data.user.profileImage
-        self.lbNick.text = data.user.userNickName
+        self.imgProfile.image = data.userData.userProfileImage
+        self.lbNick.text = data.userData.userNickName
         
     }
     

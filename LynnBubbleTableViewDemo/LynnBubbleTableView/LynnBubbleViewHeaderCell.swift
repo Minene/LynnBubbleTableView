@@ -9,27 +9,27 @@
 import UIKit
 
 class LynnBubbleViewHeaderCell: UITableViewCell {
-
+    
     @IBOutlet weak var lbDate: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.selectionStyle = .None
+        self.selectionStyle = .none
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
-    func setDate(date:NSDate, withDay:Bool) {
+    func setDate(date:Date, withDay:Bool) {
         
-        var strDate = date._stringWithFormat("yyyy/MM/dd")
+        var strDate = date._stringFromDateFormat("yyyy/MM/dd")
         
         if withDay {
-            strDate = strDate + " " + date._stringWithFormat("EEEEE").capitalizedString
+            strDate = strDate + " " + date._stringFromDateFormat("EEEEE").capitalized
         }
         self.lbDate.text = strDate
         

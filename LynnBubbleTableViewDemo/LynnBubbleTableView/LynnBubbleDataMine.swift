@@ -13,6 +13,6 @@ class LynnBubbleDataMine: LynnBubbleData {
     override init() {
         super.init()
         
-        self.type = .Mine
+        self.userDataType = .me
     }
 }

@@ -5,95 +5,212 @@
 //  Created by Lou Hwang on 2015. 10. 30..
 //  Copyright © 2015 Lou Hwang. All rights reserved.
 //
-
-import Foundation
 import UIKit
 
-enum BubbleDataType: Int {
-    case None = -1
-    case Mine = 0
-    case Someone
-}
-
-public struct LynnBubbleUser {
-    private(set) public var profileImage: UIImage?
-    private(set) public var userID:String?
-    private(set) public var userNickName:String?
-}
-
-public class LynnBubbleData: NSObject {
- 
-    internal var type: BubbleDataType = .None
-    private(set) public var user: LynnBubbleUser!
-    private(set) public var date: NSDate!
+extension UIImageView {
     
-    private(set) public var text: String?
-    private(set) public var image: UIImage?
-    private(set) public var imageURL: NSURL?
-    private(set) public var imageLoaded: Bool = false
-    
-    
-    convenience init(userID: String?, userNickname: String?, profile: UIImage?, text: String?, image: UIImage?, date: NSDate) {
-        self.init()
-        
-        self.user   = LynnBubbleUser(profileImage: profile, userID: userID, userNickName: userNickname)
-        self.date   = date
-        
-        self.text   = text
-        self.image  = image
-        imageLoaded = true
+    private struct imageCacheAssociatedKeys {
+        static var cached = "cachedImage"
     }
     
-    convenience init(imageUrl: String?, userID: String?, userNickname: String?, profile: UIImage?, placeHolderImage:UIImage = UIImage(named: "message_loading")!, failureImage:UIImage = UIImage(named: "message_loading_fail")!, date: NSDate) {
-
-        self.init(userID: userID, userNickname: userNickname, profile: profile, text: nil, image: nil, date: date)
-        
-        func loadFail() {
-            self.image = failureImage
-            self.imageLoaded = true
-        }
-        
-        guard let imageUrl = imageUrl else {
-            loadFail()
-            return
-        }
-        
-        self.imageURL = NSURL(string: imageUrl)
-        self.image = placeHolderImage
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
-            
-            guard let imageData = NSData(contentsOfURL: self.imageURL!) else {
-                loadFail()
-                return
+    //this lets us check to see if the item is supposed to be displayed or not
+    var imageCache:[String: UIImage] {
+        get {
+            guard let caching = objc_getAssociatedObject(self, &imageCacheAssociatedKeys.cached) as? [String: UIImage] else {
+                return [String: UIImage]()
             }
-            self.image = UIImage(data: imageData)
-            self.imageLoaded = true
+            return caching
         }
+        
+        
+        set(value) {
+            objc_setAssociatedObject(self,&imageCacheAssociatedKeys.cached,value,objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    
+    
+    public func setImageWithUrlRequest(requestUrl:String, placeHolderImage:UIImage? = nil,
+                                       success:((_ image:UIImage) -> Void)?,
+                                       failure:(() -> Void)?)
+    {
+        //    let url = URL(string: request)
+        self.image = placeHolderImage
+        if let cachedImage = self.imageCache[requestUrl] {
+            DispatchQueue.main.async {
+                success?(cachedImage)
+            }
+        }else{
+            DispatchQueue.global().async {
+                //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+                
+                do {
+                    let request = URL(string: requestUrl)
+                    let data = try Data(contentsOf: request!)
+                    DispatchQueue.main.async {
+                        if let downloadedImage = UIImage(data: data) {
+                            self.imageCache = [requestUrl : downloadedImage]
+                            success?(downloadedImage)
+                        }else{
+                            failure?()
+                        }
+                    }
+                } catch {
+                    failure?()
+                }
+            }
+        }
+        
+    }
+}
+
+
+extension Date {
+    
+    func _stringFromDateFormat(_ format: String) -> String {
+        let formatter = DateFormatter()
+        let language = Bundle.main.preferredLocalizations.first! as String
+        formatter.locale = Locale(identifier: language)
+        formatter.dateFormat = format;
+        return formatter.string(from: self)
+    }
+}
+
+public enum BubbleDataType: Int {
+    case none = -1
+    case me = 0
+    case someone
+}
+
+//extension BubbleDataType: Equatable {}
+//public func ==(lhs: BubbleDataType, rhs: BubbleDataType) -> Bool {
+//    return lhs.rawValue == rhs.rawValue
+//}
+
+public class LynnAttachedImageData:NSObject {
+    
+    public var placeHolderImage:UIImage?
+    public var failureImage:UIImage?
+    public var image: UIImage?
+    public var imageURL: String?
+    
+    
+    init(image:UIImage) {
+        self.image = image
+    }
+    
+    init(named:String) {
+        self.image = UIImage(named: named)
+    }
+    
+    init(url:String, placeHolderImage holder:UIImage? = nil, failureImage failure:UIImage? = nil) {
+        self.imageURL = url
+        self.placeHolderImage = holder
+        self.failureImage = failure
     }
     
     func getImageHeight (tableViewWidth width:CGFloat) -> CGFloat {
+        if self.image == nil {
+            if let tempImg = self.placeHolderImage ?? self.failureImage {
+                return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
+            }else{
+                return 10
+            }
+        }else{
+            return ((self.image!.size.height) * (width / 2)) / (self.image!.size.width)
+            
+        }
+    }
+    
+
+}
+
+public class LynnUserData :NSObject {
+    
+    private(set) public var userProfileImage: UIImage?
+    private(set) public var userID:String
+    private(set) public var userNickName:String?
+    public var userInfo: AnyObject?
+    
+    init(userUniqueId userId:String, userNickName nick:String? = nil, userProfileImage profileImg:UIImage? = nil, additionalInfo userInfo:AnyObject? = nil) {
         
-        return ((self.image!.size.height) * (width / 2)) / (self.image!
-            .size.width)
+        self.userID = userId
+        self.userNickName = nick
+        self.userProfileImage = profileImg
+        self.userInfo = userInfo
         
-//        if self.imageLoaded {
-//            return ((self.image!.size.height) * (width / 2)) / (self.image!
-//                .size.width)
-//        }else {
-//            let tempImg = UIImage(named: "message_loading")!
-//            return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
-//        }
-//        func getHeight (img:UIImage = self.image as! UIImage) -> CGFloat {
-//            return ((img.size.height) * (width / 2)) / (img.size.width)
-//        }
-//        
-//        if self.imageLoaded {
-//            return getHeight()
-//        }else{
-//            return getHeight()
-//        }
+        super.init();
+    }
+}
+
+public protocol LynnAttachedImageProtocol : class {
+    var imageData:LynnAttachedImageData? { set get }
+    func imageUpdate(to imgView:UIImageView)
+}
+
+extension LynnAttachedImageProtocol {
+    func imageUpdate(to imgView:UIImageView) {
+        
+        if imageData?.image != nil {
+            imgView.image = imageData?.image
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+            return
+        }else{
+            guard let url = imageData?.imageURL else { 
+                imgView.image = self.imageData?.failureImage
+                self.imageData?.image = self.imageData?.failureImage
+                imageUpdate(to: imgView)
+                return
+            }
+            imgView.setImageWithUrlRequest(requestUrl: url, placeHolderImage: imageData?.placeHolderImage, success: { [weak self] (downloadedImage) in
+                self?.imageData?.image = downloadedImage
+                self?.imageUpdate(to: imgView)
+//                    imgView.image = downloadedImage
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+                }, failure: { [weak self] _ in
+//                    imgView.image = self?.imageData?.failureImage
+                    self?.imageData?.image = self?.imageData?.failureImage
+                    self?.imageUpdate(to: imgView)
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+            })
+//            let request = NSMutableURLRequest(url: imageData?.imageURL as! URL)
+//            imgView.setImageWithUrlRequest(request: request, placeHolderImage: imageData?.placeHolderImage ?? UIImage(named: "message_loading"), success: { (request, response, image, fromCache) in
+//                imgView.image = image
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: self)
+//                }, failure: { (request, response, error) in
+//                    imgView.image = self.imageData?.failureImage ?? UIImage(named: "message_loading_fail")
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: self)
+//            })
+        }
         
     }
 }
+
+public class LynnBubbleData: NSObject {
+    
+    private(set) public var userDataType:BubbleDataType = .none
+    private(set) public var userData:LynnUserData = LynnUserData(userUniqueId: "")
+    
+    private(set) public var text:String?
+    private(set) public var date:Date = Date()
+    
+    private(set) public var imageData: LynnAttachedImageData?
+    
+    convenience init(userData:LynnUserData, dataOwner type:BubbleDataType,
+                     message text:String?, messageDate date:Date, attachedImage imgData:LynnAttachedImageData? = nil) {
+        
+        self.init()
+        
+        self.userDataType = type
+        self.userData = userData
+        self.text = text
+        self.date = date
+        self.imageData = imgData
+    }
+    
+    func isSameUser(_ data:LynnBubbleData) -> Bool {
+        return self.userData.userID == data.userData.userID
+    }
+}
+
 
