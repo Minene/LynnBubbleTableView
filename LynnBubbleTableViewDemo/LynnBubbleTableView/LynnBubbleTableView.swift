@@ -51,7 +51,6 @@ open class LynnBubbleTableView: UITableView {
     
     //    public var image_wrapping = true // not yet implemented
     
-    
     init() {
         super.init(frame: CGRect(), style: .plain)
         initialize()
