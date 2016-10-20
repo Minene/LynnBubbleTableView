@@ -34,9 +34,9 @@ current)
     
 - Added 3 more delegate function
 
-    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
-    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
-    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
+        func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
+        func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
+        func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
 
 - Protocol Method name has been changed like swift 3 style. 
 
