@@ -7,8 +7,7 @@ and it will automatically display everything.
 ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
 #New and Changed feature this version
-
-1. Added 2 custom data model. (UserData and ImageData)
+-1 Added 2 custom data model. (UserData and ImageData)
 
 step 1. 
 
@@ -21,8 +20,8 @@ step 2.
 step 3.
 
     let data = LynnBubbleData(userData: userMe, dataOwner: .me, message: nil, messageDate: Date(), attachedImage: imgDataCat1)
-
-2. Seperated DataSource and Delegate.
+    
+-2 Seperated DataSource and Delegate.
 
 previous) 
 
@@ -32,14 +31,14 @@ current)
 
     tbBubbleDemo.bubbleDelegate = self
     tbBubbleDemo.bubbleDataSource = self
-
-3. Added 3 more delegate function
+    
+-3 Added 3 more delegate function
 
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
 
-4. Delegate Method name chanes like swift 3 style. 
+-4 Protocol Method name has been changed like swift 3 style. 
 
 #How to use
 1.Import LynnBubbleTableView folder. (12 files)
@@ -50,7 +49,7 @@ current)
 
 4.set custom datasource. 
 
-    (self.tbBubbleDemo.bubbleDataSource = self)
+    self.tbBubbleDemo.bubbleDataSource = self
 
 5.You only need 2 datasource function.
 
@@ -70,11 +69,10 @@ refer 'New and Changed feature this version'
 
 #Configuration
 
-    public var grouping:Bool = true
-    public var grouping_interval:Double = 60
-    public var scrollHeader = true
-    public var showWeekDayHeader = true
-    public var showNickName = true      
+    grouping:Bool = true
+    var scrollHeader = true
+    var showWeekDayHeader = true
+    var showNickName = true      
         
 #Copy Right
         do it whatever you want, but please don't remove top of the 7 comment lines :)
