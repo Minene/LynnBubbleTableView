@@ -6,8 +6,32 @@ and it will automatically display everything.
 
 ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
+#New and Changed feature this version
+1. Added 2 custom data model. (UserData and ImageData)
+step 1. 
+    let userMe = LynnUserData(userUniqueId: "123", userNickName: "me", userProfileImage: nil, additionalInfo: nil)
+step 2.
+    let imgDataCat1 = LynnAttachedImageData(url: "http://i.imgur.com/FkInYhB.jpg")
+step 3.
+    let data = LynnBubbleData(userData: userMe, dataOwner: .me, message: nil, messageDate: Date(), attachedImage: imgDataCat1)
+
+2. Seperated DataSource and Delegate.
+previous) 
+    tbBubbleDemo.bubbleDataSource = self
+
+current)
+    tbBubbleDemo.bubbleDelegate = self
+    tbBubbleDemo.bubbleDataSource = self
+
+3. Added 3 more delegate function
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
+
+4. Delegate Method name chanes like swift 3 style. 
+
 #How to use
-1.Import LynnBubbleTableView folder. (14 files)
+1.Import LynnBubbleTableView folder. (12 files)
 
 2.Add a tableview in your storyboard or xib whatever, and change custom class from UITableView to LynnBubbleTableView in identity inspector
 
@@ -17,54 +41,29 @@ and it will automatically display everything.
 
 5.You only need 2 datasource function.
 
-    func numberOfRowsForBubbleTable(bubbleTableView: LynnBubbleTableView) -> Int {
+    func bubbleTableView(dataAt index: Int, bubbleTableView: LynnBubbleTableView) -> LynnBubbleData {
+        return self.arrChatTest[index]
+    }
+
+    func bubbleTableView(numberOfRows bubbleTableView: LynnBubbleTableView) -> Int {
         return self.arrChatTest.count
     }
-    func bubbleTableView(bubbleTableView: LynnBubbleTableView, dataAtIndex: Int) -> LynnBubbleData {
-        if let data:LynnBubbleData = self.arrChatTest[dataAtIndex] {
-            return data
-        }else {
-            return LynnBubbleData()
-        }
-    }
+    
 6.that's it
 
 #Data Initialize
-1. If data type is mine, use LynnBubbleDataMine class initializer
-2. If data type is someone, use LynnBubbleDataSomeone class initializer
-3. If data contains only text or local image, use init method start with (userID).
-4. If data contains remote image, use init method start with (imageUrl).
-
-4-1. You can set placeholder and load failure image.
-
-4-2. If you want to use default placeholder and load failure image, please import "message_loading" and "message_loading_fail" image from imageAsset.
-
-
-example)
-
-        LynnBubbleDataMine(userID: "123",userNickname: "me" , profile: nil, text: "my message", image: nil, date: NSDate())
-        LynnBubbleDataSomeone(userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), text: "someone message", image: nil, date: NSDate())
-        
-        LynnBubbleDataMine(userID: "123",userNickname: "me" , profile: nil, text: nil, image: local Image, date: NSDate())
-        LynnBubbleDataSomeone(imageUrl: "http://remote image address", userID: "234", userNickname: "you", profile: UIImage(named: "ico_girlprofile"), date: NSDate())
+refer 'New and Changed feature this version'
 
 
 #Configuration
-        self.tbBubbleDemo.someoneElse_grouping = true // default is true
-        self.tbBubbleDemo.header_scrollable = true // defaut is true. false is not implement yet.
-        self.tbBubbleDemo.header_show_weekday = true // default is true
-        self.tbBubbleDemo.refreshable = true // default is false
-        self.tbBubbleDemo.show_nickname = true // default is false        
-        
-
-#Convinience Function
-        self.tbBubbleDemo.scrollBubbleViewToBottom(true) // true will animate
-        func bubbleTableView (bubbleTableView:LynnBubbleTableView, didSelectRowAtIndexPath indexPath: NSIndexPath) // optional, call when bubble cell did selected
-        func bubbleTableViewRefreshed(bubbleTableView:LynnBubbleTableView) // optinal, call when bubble view triggered refresh action. please set self.tbBubbleDemo.refreshable = true when you use.
+    public var grouping:Bool = true
+    public var grouping_interval:Double = 60
+    public var scrollHeader = true
+    public var showWeekDayHeader = true
+    public var showNickName = true      
         
 #Copy Right
         do it whatever you want, but please don't remove top of the 7 comment lines :)
         
-        Thanks for helping GwaNi in MACBUGI
         
 It is my first public library. Hope it will be helpful
