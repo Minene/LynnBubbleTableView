@@ -47,7 +47,6 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
             }else{
                 self.constraintForNickHidden.constant = 0
             }
-            
         }
         
         self.setBubbleData(data: data)

@@ -97,10 +97,7 @@ class ViewController: UIViewController,LynnBubbleViewDataSource {
             
         }
         
-        
-        
         self.tbBubbleDemo.reloadData()
-        
         
     }
     
@@ -111,8 +108,6 @@ class ViewController: UIViewController,LynnBubbleViewDataSource {
     func bubbleTableView(numberOfRows bubbleTableView: LynnBubbleTableView) -> Int {
         return self.arrChatTest.count
     }
-    
-    
 }
 
 extension ViewController : LynnBubbleViewDelegate {
