@@ -7,7 +7,7 @@ and it will automatically display everything.
 ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
 #New and Changed feature this version
--1 Added 2 custom data model. (UserData and ImageData)
+- Added 2 custom data model. (UserData and ImageData)
 
 step 1. 
 
@@ -21,7 +21,7 @@ step 3.
 
     let data = LynnBubbleData(userData: userMe, dataOwner: .me, message: nil, messageDate: Date(), attachedImage: imgDataCat1)
     
--2 Seperated DataSource and Delegate.
+- Seperated DataSource and Delegate.
 
 previous) 
 
@@ -32,13 +32,13 @@ current)
     tbBubbleDemo.bubbleDelegate = self
     tbBubbleDemo.bubbleDataSource = self
     
--3 Added 3 more delegate function
+- Added 3 more delegate function
 
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
 
--4 Protocol Method name has been changed like swift 3 style. 
+- Protocol Method name has been changed like swift 3 style. 
 
 #How to use
 1.Import LynnBubbleTableView folder. (12 files)
@@ -69,7 +69,7 @@ refer 'New and Changed feature this version'
 
 #Configuration
 
-    grouping:Bool = true
+    var grouping:Bool = true
     var scrollHeader = true
     var showWeekDayHeader = true
     var showNickName = true      
