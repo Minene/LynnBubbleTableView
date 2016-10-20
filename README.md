@@ -7,18 +7,23 @@ and it will automatically display everything.
 ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111086/4b15448e-8948-11e5-91c6-3e3f98c10ac4.PNG) ![ScreenShot](https://cloud.githubusercontent.com/assets/6169147/11111085/4b14313e-8948-11e5-9aa5-8606f0df6a16.PNG)
 
 #New and Changed feature this version
+
 1. Added 2 custom data model. (UserData and ImageData)
+
 step 1. 
 
     let userMe = LynnUserData(userUniqueId: "123", userNickName: "me", userProfileImage: nil, additionalInfo: nil)
+    
 step 2.
 
     let imgDataCat1 = LynnAttachedImageData(url: "http://i.imgur.com/FkInYhB.jpg")
+    
 step 3.
 
     let data = LynnBubbleData(userData: userMe, dataOwner: .me, message: nil, messageDate: Date(), attachedImage: imgDataCat1)
 
 2. Seperated DataSource and Delegate.
+
 previous) 
 
     tbBubbleDemo.bubbleDataSource = self
@@ -43,7 +48,9 @@ current)
 
 3.Connect IBOulet in your view controller.
 
-4.set custom datasource. (self.tbBubbleDemo.bubbleDataSource = self)
+4.set custom datasource. 
+
+    (self.tbBubbleDemo.bubbleDataSource = self)
 
 5.You only need 2 datasource function.
 
@@ -62,6 +69,7 @@ refer 'New and Changed feature this version'
 
 
 #Configuration
+
     public var grouping:Bool = true
     public var grouping_interval:Double = 60
     public var scrollHeader = true
