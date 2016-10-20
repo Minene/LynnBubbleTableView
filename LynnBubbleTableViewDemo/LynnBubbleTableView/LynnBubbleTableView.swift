@@ -87,24 +87,18 @@ open class LynnBubbleTableView: UITableView {
         
         self.separatorStyle = .none
         
-        
-        
-                NotificationCenter.default.addObserver(self, selector: #selector(_imageDidLoadNotification(notification:)), name:NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(_imageDidLoadNotification(notification:)), name:NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
         
     }
     
     deinit{
-                NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
     }
     
     func _imageDidLoadNotification(notification: Notification) {
         if  let cell = notification.object as? UITableViewCell {
             if let indexPath = self.indexPath(for: cell){
                 super.reloadRows(at: [indexPath], with: .none)
-//                let section = IndexSet(integer: indexPath.section)
-//                self.beginUpdates()
-//                self.reloadSections(section, with: .none)
-//                self.endUpdates()
             }
         }
     }
@@ -229,9 +223,6 @@ extension LynnBubbleTableView : UITableViewDataSource {
             return cell
         }
     }
-//    @objc(tableView:heightForRowAtIndexPath:) public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 0
-//    }
 //
     @objc(tableView:heightForRowAtIndexPath:)
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
