@@ -9,21 +9,27 @@ and it will automatically display everything.
 #New and Changed feature this version
 1. Added 2 custom data model. (UserData and ImageData)
 step 1. 
+
     let userMe = LynnUserData(userUniqueId: "123", userNickName: "me", userProfileImage: nil, additionalInfo: nil)
 step 2.
+
     let imgDataCat1 = LynnAttachedImageData(url: "http://i.imgur.com/FkInYhB.jpg")
 step 3.
+
     let data = LynnBubbleData(userData: userMe, dataOwner: .me, message: nil, messageDate: Date(), attachedImage: imgDataCat1)
 
 2. Seperated DataSource and Delegate.
 previous) 
+
     tbBubbleDemo.bubbleDataSource = self
 
 current)
+
     tbBubbleDemo.bubbleDelegate = self
     tbBubbleDemo.bubbleDataSource = self
 
 3. Added 3 more delegate function
+
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int)
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int)
