@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController,LynnBubbleViewDataSource, LynnBubbleViewDelegate {
+class ViewController: UIViewController,LynnBubbleViewDataSource {
     
     @IBOutlet weak var tbBubbleDemo: LynnBubbleTableView!
     
@@ -101,7 +101,6 @@ class ViewController: UIViewController,LynnBubbleViewDataSource, LynnBubbleViewD
         
         self.tbBubbleDemo.reloadData()
         
-        //        self.tbBubbleDemo.scrollBubbleViewToBottom(true)
         
     }
     
@@ -113,6 +112,10 @@ class ViewController: UIViewController,LynnBubbleViewDataSource, LynnBubbleViewD
         return self.arrChatTest.count
     }
     
+    
+}
+
+extension ViewController : LynnBubbleViewDelegate {
     // optional
     func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didSelectRowAt index: Int) {
         
@@ -124,6 +127,32 @@ class ViewController: UIViewController,LynnBubbleViewDataSource, LynnBubbleViewD
         self.present(alert, animated: true, completion: nil)
     }
     
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didLongTouchedAt index: Int) {
+        let alert = UIAlertController(title: nil, message: "LongTouchedAt index : " + "\(index)", preferredStyle: .alert)
+        let closeAction = UIAlertAction(title: "Close",
+                                        style: .default) { (action: UIAlertAction!) -> Void in
+        }
+        alert.addAction(closeAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedAttachedImage image: UIImage, at index: Int) {
+        let alert = UIAlertController(title: nil, message: "AttachedImage index : " + "\(index)", preferredStyle: .alert)
+        let closeAction = UIAlertAction(title: "Close",
+                                        style: .default) { (action: UIAlertAction!) -> Void in
+        }
+        alert.addAction(closeAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func bubbleTableView(_ bubbleTableView: LynnBubbleTableView, didTouchedUserProfile userData: LynnUserData, at index: Int) {
+        let alert = UIAlertController(title: nil, message: "UserProfile index : " + "\(index)", preferredStyle: .alert)
+        let closeAction = UIAlertAction(title: "Close",
+                                        style: .default) { (action: UIAlertAction!) -> Void in
+        }
+        alert.addAction(closeAction)
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 

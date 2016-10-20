@@ -153,7 +153,7 @@ extension LynnAttachedImageProtocol {
         
         if imageData?.image != nil {
             imgView.image = imageData?.image
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
             return
         }else{
             guard let url = imageData?.imageURL else { 
@@ -163,26 +163,24 @@ extension LynnAttachedImageProtocol {
                 return
             }
             imgView.setImageWithUrlRequest(requestUrl: url, placeHolderImage: imageData?.placeHolderImage, success: { [weak self] (downloadedImage) in
+                
                 self?.imageData?.image = downloadedImage
                 self?.imageUpdate(to: imgView)
-//                    imgView.image = downloadedImage
-//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+                
                 }, failure: { [weak self] _ in
-//                    imgView.image = self?.imageData?.failureImage
+                    
                     self?.imageData?.image = self?.imageData?.failureImage
                     self?.imageUpdate(to: imgView)
-//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+                    
             })
-//            let request = NSMutableURLRequest(url: imageData?.imageURL as! URL)
-//            imgView.setImageWithUrlRequest(request: request, placeHolderImage: imageData?.placeHolderImage ?? UIImage(named: "message_loading"), success: { (request, response, image, fromCache) in
-//                imgView.image = image
-//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: self)
-//                }, failure: { (request, response, error) in
-//                    imgView.image = self.imageData?.failureImage ?? UIImage(named: "message_loading_fail")
-//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: self)
-//            })
         }
-        
+    }
+    
+    func addGesture(to imgView:UIImageView, target:UIGestureRecognizerDelegate, action:Selector) {
+        let imageTapped = UITapGestureRecognizer(target: target, action: action)
+        imageTapped.delegate = target
+        imageTapped.numberOfTapsRequired = 1
+        imgView.addGestureRecognizer(imageTapped)
     }
 }
 

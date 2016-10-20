@@ -22,6 +22,7 @@ class ImageBubbleTableViewCell: MyBubbleViewCell, LynnAttachedImageProtocol {
         // Initialization code
         self.selectionStyle = .none
         //        self.imgData.layer.borderWidth = 1.0
+        addGesture(to: self.imgView, target: self, action: #selector(actAttachedImage(sender:)))
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -34,6 +35,12 @@ class ImageBubbleTableViewCell: MyBubbleViewCell, LynnAttachedImageProtocol {
         
         self.lbTime.text = data.date._stringFromDateFormat("a h:mm")
         self.imageData = data.imageData
+        
+    }
+    func actAttachedImage(sender : UIGestureRecognizer){
+        if let loadedImage = self.imageData?.image {
+            self.gestureTarget?.attachedImagePressed(cell: self,tappedImage:loadedImage)
+        }
         
     }
 }

@@ -22,6 +22,11 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
         self.selectionStyle = .none
         self.imgProfile.layer.cornerRadius = 21.5
         self.imgProfile.clipsToBounds = true
+        
+        let profileTapped = UITapGestureRecognizer(target: self, action: #selector(actProfile(sender:)))
+        profileTapped.delegate = self
+        profileTapped.numberOfTapsRequired = 1
+        self.imgProfile?.addGestureRecognizer(profileTapped)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -56,5 +61,7 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
         self.lbNick.text = data.userData.userNickName
         
     }
-    
+    func actProfile(sender : UIGestureRecognizer){
+        self.gestureTarget?.userProfilePressed(cell: self)
+    }
 }

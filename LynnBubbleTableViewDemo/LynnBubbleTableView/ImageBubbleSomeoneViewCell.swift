@@ -22,6 +22,7 @@ class ImageBubbleSomeoneViewCell: Someone_sBubbleViewCell, LynnAttachedImageProt
         // Initialization code
         self.selectionStyle = .none
         //        self.imgData.layer.borderWidth = 1.0
+        addGesture(to: self.imgView, target: self, action: #selector(actAttachedImage(sender:)))
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -38,5 +39,9 @@ class ImageBubbleSomeoneViewCell: Someone_sBubbleViewCell, LynnAttachedImageProt
         
         self.imageData = data.imageData
     }
-    
+    func actAttachedImage(sender : UIGestureRecognizer){
+        if let loadedImage = self.imageData?.image {
+            self.gestureTarget?.attachedImagePressed(cell: self,tappedImage:loadedImage)
+        }
+    }
 }
