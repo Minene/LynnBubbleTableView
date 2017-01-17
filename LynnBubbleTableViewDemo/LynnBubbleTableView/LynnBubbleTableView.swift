@@ -310,7 +310,7 @@ extension LynnBubbleTableView : BubbleViewCellEventDelegate {
 
     internal func userProfilePressed(cell: MyBubbleViewCell) {
         if let indexPath = self.indexPath(for: cell){
-            let bubbleData = self.arrBubbleSection[indexPath.section][indexPath.row]
+            let bubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
             self.bubbleDelegate?.bubbleTableView?(self, didTouchedUserProfile: bubbleData.userData, at: self.getDataRow(indexPath: indexPath))
         }
     }
