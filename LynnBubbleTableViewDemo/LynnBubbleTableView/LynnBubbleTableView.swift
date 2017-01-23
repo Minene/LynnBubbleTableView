@@ -98,7 +98,15 @@ open class LynnBubbleTableView: UITableView {
     func _imageDidLoadNotification(notification: Notification) {
         if  let cell = notification.object as? UITableViewCell {
             if let indexPath = self.indexPath(for: cell){
-                super.reloadRows(at: [indexPath], with: .none)
+                DispatchQueue.main.async() {
+                    if Thread.isMainThread {
+                        print("main")
+                    }else{
+                        print("sub")
+                    }
+                    
+                    super.reloadRows(at: [indexPath], with: .none)
+                }
             }
         }
     }
@@ -227,7 +235,7 @@ extension LynnBubbleTableView : UITableViewDataSource {
     @objc(tableView:heightForRowAtIndexPath:)
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if indexPath.row > 1 {
+        if indexPath.row > 0 {
             
             let bubbleData:LynnBubbleData = self.arrBubbleSection[indexPath.section][indexPath.row - 1]
             
@@ -291,13 +299,16 @@ extension LynnBubbleTableView : UITableViewDelegate
             idxCnt += arrBubbleSection[index].count
         }
         idxCnt += indexPath.row
+        idxCnt -= 1; // decrease header row
         return idxCnt
     }
     
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.bubbleDelegate?.bubbleTableView?(self, didSelectRowAt: self.getDataRow(indexPath: indexPath))
-        tableView.deselectRow(at: indexPath, animated: false)
+        if indexPath.row != 0 {
+            self.bubbleDelegate?.bubbleTableView?(self, didSelectRowAt: self.getDataRow(indexPath: indexPath))
+            tableView.deselectRow(at: indexPath, animated: false)
+        }
     }
 }
 

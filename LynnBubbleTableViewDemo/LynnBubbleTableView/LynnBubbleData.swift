@@ -40,6 +40,7 @@ extension UIImageView {
             DispatchQueue.main.async {
                 success?(cachedImage)
             }
+            
         }else{
             DispatchQueue.global().async {
                 //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
@@ -47,16 +48,21 @@ extension UIImageView {
                 do {
                     let request = URL(string: requestUrl)
                     let data = try Data(contentsOf: request!)
-                    DispatchQueue.main.async {
-                        if let downloadedImage = UIImage(data: data) {
-                            self.imageCache = [requestUrl : downloadedImage]
+                    if let downloadedImage = UIImage(data: data) {
+                        self.imageCache = [requestUrl : downloadedImage]
+                        DispatchQueue.main.async {
                             success?(downloadedImage)
-                        }else{
+                        }
+                    }else{
+                        DispatchQueue.main.async {
                             failure?()
                         }
                     }
                 } catch {
-                    failure?()
+                    DispatchQueue.main.async {
+                        failure?()
+                    }
+                    
                 }
             }
         }
@@ -93,6 +99,7 @@ public class LynnAttachedImageData:NSObject {
     public var failureImage:UIImage?
     public var image: UIImage?
     public var imageURL: String?
+    public var imageLoaded:Bool = false
     
     
     init(image:UIImage) {
@@ -109,7 +116,7 @@ public class LynnAttachedImageData:NSObject {
         self.failureImage = failure
     }
     
-    func getImageHeight (tableViewWidth width:CGFloat) -> CGFloat {
+    func getImageHeight(tableViewWidth width:CGFloat) -> CGFloat {
         if self.image == nil {
             if let tempImg = self.placeHolderImage ?? self.failureImage {
                 return ((tempImg.size.height) * (width / 2)) / (tempImg.size.width)
@@ -117,7 +124,10 @@ public class LynnAttachedImageData:NSObject {
                 return 10
             }
         }else{
-            return ((self.image!.size.height) * (width / 2)) / (self.image!.size.width)
+            let imageHeight = self.image!.size.height
+            let imageWidth = self.image!.size.width
+            let height = (imageHeight * (width / 2)) / imageWidth
+            return height
             
         }
     }
@@ -151,29 +161,64 @@ public protocol LynnAttachedImageProtocol : class {
 extension LynnAttachedImageProtocol {
     func imageUpdate(to imgView:UIImageView) {
         
-        if imageData?.image != nil {
-            imgView.image = imageData?.image
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+        guard let _ = self.imageData else {
             return
+        }
+        
+        if self.imageData!.imageLoaded {
+            imgView.image = self.imageData!.image
+            return;
         }else{
-            guard let url = imageData?.imageURL else { 
-                imgView.image = self.imageData?.failureImage
-                self.imageData?.image = self.imageData?.failureImage
-                imageUpdate(to: imgView)
+            if self.imageData!.image != nil {
+                imgView.image = self.imageData!.image
+                self.imageData!.imageLoaded = true
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
                 return
-            }
-            imgView.setImageWithUrlRequest(requestUrl: url, placeHolderImage: imageData?.placeHolderImage, success: { [weak self] (downloadedImage) in
-                
-                self?.imageData?.image = downloadedImage
-                self?.imageUpdate(to: imgView)
-                
-                }, failure: { [weak self] _ in
+            }else{
+                guard let url = self.imageData!.imageURL else {
+                    self.imageData!.image = self.imageData!.failureImage
+                    self.imageUpdate(to: imgView)
+                    return
+                }
+                imgView.setImageWithUrlRequest(requestUrl: url, placeHolderImage: self.imageData?.placeHolderImage, success: { [weak self] (downloadedImage) in
                     
-                    self?.imageData?.image = self?.imageData?.failureImage
+                    self?.imageData!.image = downloadedImage
                     self?.imageUpdate(to: imgView)
                     
-            })
+                    }, failure: { [weak self] _ in
+                        
+                        self?.imageData!.image = self?.imageData!.failureImage
+                        self?.imageUpdate(to: imgView)
+                })
+            }
         }
+        
+        /*
+        DispatchQueue.global().async { [unowned self] in
+            if self.imageData?.image != nil {
+                imgView.image = self.imageData?.image
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "_CellDidLoadImageNotification"), object: imgView.superview?.superview)
+                return
+            }else{
+                guard let url = self.imageData?.imageURL else {
+                    imgView.image = self.imageData?.failureImage
+                    self.imageData?.image = self.imageData?.failureImage
+                    self.imageUpdate(to: imgView)
+                    return
+                }
+                imgView.setImageWithUrlRequest(requestUrl: url, placeHolderImage: self.imageData?.placeHolderImage, success: { [weak self] (downloadedImage) in
+                    
+                    self?.imageData?.image = downloadedImage
+                    self?.imageUpdate(to: imgView)
+                    
+                    }, failure: { [weak self] _ in
+                        
+                        self?.imageData?.image = self?.imageData?.failureImage
+                        self?.imageUpdate(to: imgView)
+                })
+            }
+        }*/
+        
     }
     
     func addGesture(to imgView:UIImageView, target:UIGestureRecognizerDelegate, action:Selector) {

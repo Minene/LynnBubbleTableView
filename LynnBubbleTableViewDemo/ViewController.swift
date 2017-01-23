@@ -35,6 +35,28 @@ class ViewController: UIViewController,LynnBubbleViewDataSource {
     
     
     func testChatData () {
+        /*
+        let userMe = LynnUserData(userUniqueId: "123", userNickName: "me", userProfileImage: nil, additionalInfo: nil)
+        let userSomeone = LynnUserData(userUniqueId: "234", userNickName: "you", userProfileImage: UIImage(named: "ico_girlprofile"), additionalInfo: nil)
+        
+        let yesterDay = Date().addingTimeInterval(-60*60*24)
+        
+        
+        let bubbleData:LynnBubbleData = LynnBubbleData(userData: userMe, dataOwner: .me, message: "test", messageDate: yesterDay)
+        
+        self.arrChatTest.append(bubbleData)  //삽입
+        
+        print(index)
+        
+        let image_width = LynnAttachedImageData(named: "cat_width.jpg")
+        
+        self.arrChatTest.append(LynnBubbleData(userData: userSomeone, dataOwner: .someone, message: nil, messageDate: Date(), attachedImage: image_width))  //삽입
+        self.arrChatTest.append(bubbleData) //삽입
+        
+        
+        self.tbBubbleDemo.reloadData()
+        
+        */
         var messageMine = "aslkjfdlkjglkjsdjglksjdflkjlskvjkldjv lkjclvkjvlkjvlklkjlcklck"
         var messageSomeone = "asklfd"
         
@@ -98,7 +120,7 @@ class ViewController: UIViewController,LynnBubbleViewDataSource {
         }
         
         self.tbBubbleDemo.reloadData()
-        
+ 
     }
     
     func bubbleTableView(dataAt index: Int, bubbleTableView: LynnBubbleTableView) -> LynnBubbleData {
