@@ -37,7 +37,7 @@ class ImageBubbleTableViewCell: MyBubbleViewCell, LynnAttachedImageProtocol {
         self.imageData = data.imageData
         
     }
-    func actAttachedImage(sender : UIGestureRecognizer){
+    @objc func actAttachedImage(sender : UIGestureRecognizer){
         if let loadedImage = self.imageData?.image {
             self.gestureTarget?.attachedImagePressed(cell: self,tappedImage:loadedImage)
         }

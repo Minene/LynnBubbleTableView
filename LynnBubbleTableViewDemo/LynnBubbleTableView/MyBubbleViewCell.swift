@@ -37,7 +37,7 @@ class MyBubbleViewCell: UITableViewCell {
         
     }
     
-    func longTap(sender : UIGestureRecognizer){
+    @objc func longTap(sender : UIGestureRecognizer){
         print("Long tap")
         if sender.state == .ended {
             print("UIGestureRecognizerStateEnded")

@@ -60,7 +60,7 @@ class Someone_sBubbleViewCell: MyBubbleViewCell {
         self.lbNick.text = data.userData.userNickName
         
     }
-    func actProfile(sender : UIGestureRecognizer){
+    @objc func actProfile(sender : UIGestureRecognizer){
         self.gestureTarget?.userProfilePressed(cell: self)
     }
 }

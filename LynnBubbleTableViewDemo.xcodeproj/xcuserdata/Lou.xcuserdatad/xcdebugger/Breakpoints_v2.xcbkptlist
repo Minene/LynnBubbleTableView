@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LynnBubbleTableViewDemo/LynnBubbleTableView/LynnBubbleTableView.swift"
-            timestampString = "506582875.076694"
+            timestampString = "563163486.528428"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "99"
@@ -79,8 +79,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "16"
             endingLineNumber = "16"
-            landmarkName = "ImageBubbleSomeoneViewCell"
-            landmarkType = "3">
+            landmarkName = "imageData"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LynnBubbleTableViewDemo/LynnBubbleTableView/LynnBubbleTableView.swift"
-            timestampString = "506584249.057912"
+            timestampString = "563163486.528605"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "184"
@@ -106,7 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LynnBubbleTableViewDemo/LynnBubbleTableView/LynnBubbleData.swift"
-            timestampString = "506595935.517106"
+            timestampString = "563163486.528684"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "54"
@@ -122,7 +122,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LynnBubbleTableViewDemo/LynnBubbleTableView/LynnBubbleData.swift"
-            timestampString = "506595936.773145"
+            timestampString = "563163486.530439"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "58"
@@ -138,7 +138,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LynnBubbleTableViewDemo/LynnBubbleTableView/LynnBubbleData.swift"
-            timestampString = "506595937.853202"
+            timestampString = "563163486.530792"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "63"

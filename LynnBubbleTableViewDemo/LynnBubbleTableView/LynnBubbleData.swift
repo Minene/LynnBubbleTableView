@@ -185,8 +185,7 @@ extension LynnAttachedImageProtocol {
                     self?.imageData!.image = downloadedImage
                     self?.imageUpdate(to: imgView)
                     
-                    }, failure: { [weak self] _ in
-                        
+                    },failure: { [weak self] in
                         self?.imageData!.image = self?.imageData!.failureImage
                         self?.imageUpdate(to: imgView)
                 })

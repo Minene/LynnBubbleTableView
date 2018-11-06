@@ -66,7 +66,7 @@ open class LynnBubbleTableView: UITableView {
         initialize()
     }
     
-    override init(frame: CGRect, style: UITableViewStyle) {
+    override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         initialize()
     }
@@ -76,7 +76,7 @@ open class LynnBubbleTableView: UITableView {
         self.delegate = self
         self.dataSource = self
         
-        self.rowHeight = UITableViewAutomaticDimension
+        self.rowHeight = UITableView.automaticDimension
 //        self.estimatedRowHeight = 80
         
         self.register(UINib(nibName: "LynnBubbleViewHeaderCell", bundle: nil), forCellReuseIdentifier: "lynnBubbleHeaderCell")
@@ -95,7 +95,7 @@ open class LynnBubbleTableView: UITableView {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "_CellDidLoadImageNotification"), object: nil)
     }
     
-    func _imageDidLoadNotification(notification: Notification) {
+    @objc func _imageDidLoadNotification(notification: Notification) {
         if  let cell = notification.object as? UITableViewCell {
             if let indexPath = self.indexPath(for: cell){
                 DispatchQueue.main.async() {
@@ -273,7 +273,7 @@ extension LynnBubbleTableView : UITableViewDataSource {
                 }
             }
         }
-        return UITableViewAutomaticDimension
+        return UITableView.automaticDimension
     }
     
     @objc(tableView:estimatedHeightForRowAtIndexPath:)
@@ -281,7 +281,7 @@ extension LynnBubbleTableView : UITableViewDataSource {
         if let height = self.heightAtIndexPath[indexPath] {
             return height
         }else{
-            return UITableViewAutomaticDimension;
+            return UITableView.automaticDimension;
         }
     }
     
